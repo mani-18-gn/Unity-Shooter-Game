@@ -19,7 +19,7 @@ namespace Roadbound.Editor
         private const string ControllerPath = "Assets/Animations/Combat/SwatAnimatorController.controller";
         private const string Ak47ModelPath = "Assets/Weapons/AK47.obj";
         private const string Ak47MatPath = "Assets/Weapons/AK47_URP.mat";
-        private const string AutoRunKey = "Roadbound_SoldierFix_Completed_v6_WeaponOrientation";
+        private const string AutoRunKey = "Roadbound_SoldierFix_Completed_v7_BarrelForward";
 
         static SoldierAnimationSetupTool()
         {
@@ -471,14 +471,14 @@ namespace Roadbound.Editor
             var serAttachment = new SerializedObject(attachment);
             serAttachment.FindProperty("socketLocalPosition").vector3Value = new Vector3(-0.01f, 0.07f, 0.03f);
             serAttachment.FindProperty("socketLocalEuler").vector3Value = new Vector3(273.13f, 179.84f, 279.89f);
-            serAttachment.FindProperty("weaponModelOffset").vector3Value = new Vector3(0f, 0.08f, 0.10f);
-            serAttachment.FindProperty("weaponModelEuler").vector3Value = Vector3.zero;
+            serAttachment.FindProperty("weaponModelOffset").vector3Value = new Vector3(0f, 0.05f, 0.18f);
+            serAttachment.FindProperty("weaponModelEuler").vector3Value = new Vector3(0f, 180f, 0f);
             serAttachment.FindProperty("weaponModelScale").vector3Value = Vector3.one;
-            serAttachment.FindProperty("muzzleLocalOffset").vector3Value = new Vector3(0f, 0.045f, 0.50f);
+            serAttachment.FindProperty("muzzleLocalOffset").vector3Value = new Vector3(0f, 0.085f, -0.50f);
             serAttachment.FindProperty("enableLeftHandIK").boolValue = true;
             serAttachment.FindProperty("leftHandIKWeight").floatValue = 1.0f;
-            serAttachment.FindProperty("leftGripLocalOffset").vector3Value = new Vector3(-0.06f, -0.01f, 0.18f);
-            serAttachment.FindProperty("leftGripLocalEuler").vector3Value = new Vector3(276.14f, 127.60f, 102.44f);
+            serAttachment.FindProperty("leftGripLocalOffset").vector3Value = new Vector3(-0.04f, 0.06f, -0.22f);
+            serAttachment.FindProperty("leftGripLocalEuler").vector3Value = new Vector3(276.14f, 307.60f, 102.44f);
             serAttachment.FindProperty("enableAimLookAtIK").boolValue = true;
             serAttachment.FindProperty("aimLookAtWeight").floatValue = 0.75f;
             serAttachment.ApplyModifiedProperties();
@@ -503,6 +503,13 @@ namespace Roadbound.Editor
             // 8. Align MuzzlePoint hook with rifle barrel tip
             if (attachment.MuzzlePointTransform != null)
             {
+                var legacyMuzzle = player.transform.Find("MuzzlePoint");
+                if (legacyMuzzle != null)
+                {
+                    legacyMuzzle.position = attachment.MuzzlePointTransform.position;
+                    legacyMuzzle.rotation = attachment.MuzzlePointTransform.rotation;
+                }
+
                 var fireSystem = player.GetComponent<WeaponFireSystem>();
                 if (fireSystem != null)
                 {

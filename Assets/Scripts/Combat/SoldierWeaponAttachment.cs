@@ -24,17 +24,17 @@ namespace Roadbound.Combat
 
         [Header("Weapon Model Offsets")]
         [Tooltip("Position offset of AK47_Model relative to RightHandSocket to place the pistol grip firmly in the palm.")]
-        [SerializeField] private Vector3 weaponModelOffset = new Vector3(0f, 0.08f, 0.10f);
+        [SerializeField] private Vector3 weaponModelOffset = new Vector3(0f, 0.05f, 0.18f);
 
-        [Tooltip("Rotation offset of AK47_Model relative to RightHandSocket.")]
-        [SerializeField] private Vector3 weaponModelEuler = Vector3.zero;
+        [Tooltip("Rotation offset of AK47_Model relative to RightHandSocket (180 deg Y aligns model barrel forward).")]
+        [SerializeField] private Vector3 weaponModelEuler = new Vector3(0f, 180f, 0f);
 
         [Tooltip("Scale of the weapon model.")]
         [SerializeField] private Vector3 weaponModelScale = Vector3.one;
 
         [Header("Muzzle Configuration")]
-        [Tooltip("Local position of MuzzleHook relative to the weapon model (tip of the barrel).")]
-        [SerializeField] private Vector3 muzzleLocalOffset = new Vector3(0f, 0.045f, 0.50f);
+        [Tooltip("Local position of MuzzleHook relative to the weapon model (tip of the physical barrel).")]
+        [SerializeField] private Vector3 muzzleLocalOffset = new Vector3(0f, 0.085f, -0.50f);
 
         [Header("Left Hand IK (Support Hand on Handguard)")]
         [Tooltip("Enable Left Hand Inverse Kinematics to lock the support hand to the rifle handguard.")]
@@ -45,10 +45,10 @@ namespace Roadbound.Combat
         [SerializeField] private float leftHandIKWeight = 1.0f;
 
         [Tooltip("Local offset of LeftHandGrip relative to weapon model (center of wooden handguard).")]
-        [SerializeField] private Vector3 leftGripLocalOffset = new Vector3(-0.06f, -0.01f, 0.18f);
+        [SerializeField] private Vector3 leftGripLocalOffset = new Vector3(-0.04f, 0.06f, -0.22f);
 
         [Tooltip("Local Euler rotation of LeftHandGrip relative to weapon model, orienting palm around handguard.")]
-        [SerializeField] private Vector3 leftGripLocalEuler = new Vector3(276.14f, 127.60f, 102.44f);
+        [SerializeField] private Vector3 leftGripLocalEuler = new Vector3(276.14f, 307.60f, 102.44f);
 
         [Header("Look-At Aiming IK")]
         [Tooltip("Enable upper-body Look-At IK to pitch and turn toward crosshair.")]
@@ -79,10 +79,16 @@ namespace Roadbound.Combat
         public Transform LeftHandGripTransform => leftHandGripTransform;
         public bool IsAttached => rightHandBone != null && socketTransform != null && weaponModelTransform != null;
 
+        /// <summary>
+        /// True forward vector of the rifle barrel pointing out through the muzzle.
+        /// </summary>
+        public Vector3 BarrelForward => muzzlePointTransform != null ? muzzlePointTransform.forward : (weaponModelTransform != null ? -weaponModelTransform.forward : transform.forward);
+
         // Inspector Configuration Accessors
         public Vector3 SocketLocalPosition { get => socketLocalPosition; set => socketLocalPosition = value; }
         public Vector3 SocketLocalEuler { get => socketLocalEuler; set => socketLocalEuler = value; }
         public Vector3 WeaponModelOffset { get => weaponModelOffset; set => weaponModelOffset = value; }
+        public Vector3 WeaponModelEuler { get => weaponModelEuler; set => weaponModelEuler = value; }
         public Vector3 MuzzleLocalOffset { get => muzzleLocalOffset; set => muzzleLocalOffset = value; }
         public Vector3 LeftGripLocalOffset { get => leftGripLocalOffset; set => leftGripLocalOffset = value; }
         public Vector3 LeftGripLocalEuler { get => leftGripLocalEuler; set => leftGripLocalEuler = value; }
@@ -225,7 +231,7 @@ namespace Roadbound.Combat
                 }
                 muzzlePointTransform.SetParent(weaponModelTransform, false);
                 muzzlePointTransform.localPosition = muzzleLocalOffset;
-                muzzlePointTransform.localRotation = Quaternion.identity;
+                muzzlePointTransform.localRotation = Quaternion.Euler(0f, 180f, 0f);
 
                 // 5. Left Hand Grip Target
                 if (leftHandGripTransform == null)

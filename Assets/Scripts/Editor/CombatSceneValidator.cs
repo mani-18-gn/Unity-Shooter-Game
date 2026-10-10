@@ -224,9 +224,15 @@ namespace Roadbound.Editor
             {
                 fireClip.SampleAnimation(ch15.gameObject, 0.1f);
                 attachmentComp.SetupAttachment();
-                float rifleFwdAngle = Vector3.Angle(attachmentComp.WeaponModelTransform.forward, ch15.forward);
+                float barrelFwdAngle = Vector3.Angle(attachmentComp.BarrelForward, ch15.forward);
+                float muzzleFwdAngle = Vector3.Angle(attachmentComp.MuzzlePointTransform.forward, ch15.forward);
                 float rifleUpAngle = Vector3.Angle(attachmentComp.WeaponModelTransform.up, ch15.up);
-                Assert.Less(rifleFwdAngle, 15.0f, $"Rifle barrel must face forward in aiming direction! Angle was {rifleFwdAngle:F1} deg");
+                Vector3 stockDir = attachmentComp.WeaponModelTransform.forward; // In AK47.obj, +Z is buttstock
+                float stockBackAngle = Vector3.Angle(stockDir, -ch15.forward);
+
+                Assert.Less(barrelFwdAngle, 15.0f, $"Rifle barrel must face forward in aiming direction! Angle was {barrelFwdAngle:F1} deg");
+                Assert.Less(muzzleFwdAngle, 15.0f, $"Rifle muzzle must face forward toward crosshair! Angle was {muzzleFwdAngle:F1} deg");
+                Assert.Less(stockBackAngle, 25.0f, $"Rifle stock must face backward toward player shoulder! Angle was {stockBackAngle:F1} deg");
                 Assert.Less(rifleUpAngle, 25.0f, $"Rifle must be right-side up! Angle was {rifleUpAngle:F1} deg");
             }
 

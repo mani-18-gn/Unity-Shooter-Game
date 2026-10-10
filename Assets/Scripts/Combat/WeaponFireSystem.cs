@@ -30,7 +30,23 @@ namespace Roadbound.Combat
             if (weapon == null) return;
 
             Vector3 muzzlePos = defaultMuzzlePoint != null ? defaultMuzzlePoint.position : fireOrigin;
-            Vector3 baseDirection = (crosshairTarget - fireOrigin).normalized;
+
+            // Direct shot from weapon muzzle toward camera crosshair target point
+            Vector3 muzzleToTarget = crosshairTarget - muzzlePos;
+            Vector3 baseDirection;
+            if (muzzleToTarget.sqrMagnitude > 0.001f)
+            {
+                baseDirection = muzzleToTarget.normalized;
+                // Safety guard: ensure shot points forward from muzzle
+                if (defaultMuzzlePoint != null && Vector3.Dot(baseDirection, defaultMuzzlePoint.forward) < 0f)
+                {
+                    baseDirection = defaultMuzzlePoint.forward;
+                }
+            }
+            else
+            {
+                baseDirection = defaultMuzzlePoint != null ? defaultMuzzlePoint.forward : (crosshairTarget - fireOrigin).normalized;
+            }
 
             // 1. Calculate spread angle
             float spreadAmount = weapon.spread;
@@ -41,7 +57,8 @@ namespace Roadbound.Combat
             int pelletCount = Mathf.Max(1, weapon.pellets);
             float perPelletDamage = weapon.damage / pelletCount;
 
-            // 2. Fire raycasts for each pellet (1 for rifle/pistol, 8 for shotgun)
+            // 2. Fire raycasts from muzzle for each pellet (1 for rifle/pistol, 8 for shotgun)
+            Transform shooterRoot = transform.root;
             for (int i = 0; i < pelletCount; i++)
             {
                 Vector3 shootDirection = baseDirection;
@@ -52,13 +69,25 @@ namespace Roadbound.Combat
                     shootDirection = (baseDirection + spreadOffset).normalized;
                 }
 
-                // Raycast from camera origin to ensure precision through crosshair
-                Ray bulletRay = new Ray(fireOrigin, shootDirection);
-                if (Physics.Raycast(bulletRay, out RaycastHit hit, weapon.range, hitLayers, QueryTriggerInteraction.Ignore))
+                // Raycast from muzzle toward crosshair target, filtering out shooter's own colliders
+                Ray bulletRay = new Ray(muzzlePos, shootDirection);
+                RaycastHit[] hits = Physics.RaycastAll(bulletRay, weapon.range, hitLayers, QueryTriggerInteraction.Ignore);
+                if (hits != null && hits.Length > 0)
                 {
-                    bool isHeadshot = CheckIsHeadshot(hit);
-                    ApplyDamage(hit, perPelletDamage, isHeadshot);
-                    OnHitConfirmed?.Invoke(hit, isHeadshot, perPelletDamage);
+                    Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+                    for (int hIdx = 0; hIdx < hits.Length; hIdx++)
+                    {
+                        RaycastHit hit = hits[hIdx];
+                        if (hit.transform == transform || hit.transform.IsChildOf(transform) || (shooterRoot != null && hit.transform.root == shooterRoot))
+                        {
+                            continue; // Skip self colliders
+                        }
+
+                        bool isHeadshot = CheckIsHeadshot(hit);
+                        ApplyDamage(hit, perPelletDamage, isHeadshot);
+                        OnHitConfirmed?.Invoke(hit, isHeadshot, perPelletDamage);
+                        break;
+                    }
                 }
             }
 
