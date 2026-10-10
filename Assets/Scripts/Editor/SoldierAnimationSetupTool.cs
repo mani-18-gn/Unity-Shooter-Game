@@ -19,7 +19,7 @@ namespace Roadbound.Editor
         private const string ControllerPath = "Assets/Animations/Combat/SwatAnimatorController.controller";
         private const string Ak47ModelPath = "Assets/Weapons/AK47.obj";
         private const string Ak47MatPath = "Assets/Weapons/AK47_URP.mat";
-        private const string AutoRunKey = "Roadbound_SoldierFix_Completed_v4";
+        private const string AutoRunKey = "Roadbound_SoldierFix_Completed_v5";
 
         static SoldierAnimationSetupTool()
         {
@@ -151,7 +151,143 @@ namespace Roadbound.Editor
                 Debug.Log($"[SoldierAnimationSetupTool] Default state updated to 'Idle' playing swat@Idle clip.");
             }
 
+            ConfigureTransitions(ctrl);
+
             return ctrl;
+        }
+
+        public static void ConfigureTransitions(AnimatorController ctrl)
+        {
+            if (ctrl == null || ctrl.layers == null || ctrl.layers.Length == 0) return;
+            var rootSm = ctrl.layers[0].stateMachine;
+            if (rootSm == null) return;
+
+            AnimatorState idleState = null;
+            AnimatorState locomotionState = null;
+            AnimatorState crouchState = null;
+            AnimatorState fireState = null;
+            AnimatorState deathState = null;
+
+            foreach (var childState in rootSm.states)
+            {
+                if (childState.state.name == "Idle") idleState = childState.state;
+                else if (childState.state.name == "Locomotion") locomotionState = childState.state;
+                else if (childState.state.name == "CrouchLocomotion") crouchState = childState.state;
+                else if (childState.state.name == "Fire") fireState = childState.state;
+                else if (childState.state.name == "Death") deathState = childState.state;
+            }
+
+            if (idleState == null || locomotionState == null || crouchState == null) return;
+
+            // Clear existing state transitions on idle, locomotion, crouch, fire
+            ClearTransitions(idleState);
+            ClearTransitions(locomotionState);
+            ClearTransitions(crouchState);
+            if (fireState != null) ClearTransitions(fireState);
+
+            // 1. Idle Transitions
+            // Idle -> Locomotion
+            var idleToLoco = idleState.AddTransition(locomotionState);
+            idleToLoco.hasExitTime = false;
+            idleToLoco.duration = 0.15f;
+            idleToLoco.AddCondition(AnimatorConditionMode.Greater, 0.2f, "Speed");
+
+            // Idle -> CrouchLocomotion
+            var idleToCrouch = idleState.AddTransition(crouchState);
+            idleToCrouch.hasExitTime = false;
+            idleToCrouch.duration = 0.15f;
+            idleToCrouch.AddCondition(AnimatorConditionMode.If, 0, "IsCrouching");
+
+            // 2. Locomotion Transitions
+            // Locomotion -> Idle
+            var locoToIdle = locomotionState.AddTransition(idleState);
+            locoToIdle.hasExitTime = false;
+            locoToIdle.duration = 0.15f;
+            locoToIdle.AddCondition(AnimatorConditionMode.Less, 0.2f, "Speed");
+
+            // Locomotion -> CrouchLocomotion (Direct sprint-to-crouch transition)
+            var locoToCrouch = locomotionState.AddTransition(crouchState);
+            locoToCrouch.hasExitTime = false;
+            locoToCrouch.duration = 0.15f;
+            locoToCrouch.AddCondition(AnimatorConditionMode.If, 0, "IsCrouching");
+
+            // 3. CrouchLocomotion Transitions
+            // CrouchLocomotion -> Locomotion (Uncrouching while moving)
+            var crouchToLoco = crouchState.AddTransition(locomotionState);
+            crouchToLoco.hasExitTime = false;
+            crouchToLoco.duration = 0.15f;
+            crouchToLoco.AddCondition(AnimatorConditionMode.IfNot, 0, "IsCrouching");
+            crouchToLoco.AddCondition(AnimatorConditionMode.Greater, 0.2f, "Speed");
+
+            // CrouchLocomotion -> Idle (Uncrouching while stationary)
+            var crouchToIdle = crouchState.AddTransition(idleState);
+            crouchToIdle.hasExitTime = false;
+            crouchToIdle.duration = 0.15f;
+            crouchToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsCrouching");
+
+            // 4. Fire Transitions
+            if (fireState != null)
+            {
+                // Fire -> CrouchLocomotion (if crouched)
+                var fireToCrouch = fireState.AddTransition(crouchState);
+                fireToCrouch.hasExitTime = true;
+                fireToCrouch.exitTime = 0.85f;
+                fireToCrouch.duration = 0.12f;
+                fireToCrouch.AddCondition(AnimatorConditionMode.If, 0, "IsCrouching");
+
+                // Fire -> Locomotion (if moving)
+                var fireToLoco = fireState.AddTransition(locomotionState);
+                fireToLoco.hasExitTime = true;
+                fireToLoco.exitTime = 0.85f;
+                fireToLoco.duration = 0.12f;
+                fireToLoco.AddCondition(AnimatorConditionMode.Greater, 0.2f, "Speed");
+
+                // Fire -> Idle (stationary fallback)
+                var fireToIdle = fireState.AddTransition(idleState);
+                fireToIdle.hasExitTime = true;
+                fireToIdle.exitTime = 0.85f;
+                fireToIdle.duration = 0.12f;
+            }
+
+            // 5. AnyState Transitions
+            bool hasAnyToFire = false;
+            bool hasAnyToDeath = false;
+            foreach (var ast in rootSm.anyStateTransitions)
+            {
+                if (ast.destinationState == fireState) hasAnyToFire = true;
+                if (ast.destinationState == deathState) hasAnyToDeath = true;
+            }
+
+            if (!hasAnyToFire && fireState != null)
+            {
+                var toFire = rootSm.AddAnyStateTransition(fireState);
+                toFire.hasExitTime = false;
+                toFire.duration = 0.05f;
+                toFire.AddCondition(AnimatorConditionMode.If, 0, "Fire");
+            }
+
+            if (!hasAnyToDeath && deathState != null)
+            {
+                var toDeath = rootSm.AddAnyStateTransition(deathState);
+                toDeath.hasExitTime = false;
+                toDeath.duration = 0.10f;
+                toDeath.canTransitionToSelf = false;
+                toDeath.AddCondition(AnimatorConditionMode.If, 0, "Die");
+            }
+
+            EditorUtility.SetDirty(ctrl);
+            AssetDatabase.SaveAssets();
+            Debug.Log("[SoldierAnimationSetupTool] SwatAnimatorController transitions optimized and saved.");
+        }
+
+        private static void ClearTransitions(AnimatorState state)
+        {
+            if (state == null || state.transitions == null) return;
+            var list = new System.Collections.Generic.List<AnimatorStateTransition>(state.transitions);
+            foreach (var t in list)
+            {
+                state.RemoveTransition(t);
+            }
         }
 
         private static void EnsureWeaponMaterial()

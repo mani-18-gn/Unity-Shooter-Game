@@ -150,6 +150,18 @@ namespace Roadbound.Player
                 if (Keyboard.current.digit1Key.wasPressedThisFrame) OnQuickSelectSlot?.Invoke(0);
                 if (Keyboard.current.digit2Key.wasPressedThisFrame) OnQuickSelectSlot?.Invoke(1);
                 if (Keyboard.current.digit3Key.wasPressedThisFrame) OnQuickSelectSlot?.Invoke(2);
+
+                // 7. Jump & Crouch Fallbacks
+                if (jumpAction == null && Keyboard.current.spaceKey.wasPressedThisFrame)
+                {
+                    JumpTriggered = true;
+                    OnJump?.Invoke();
+                }
+                if (crouchAction == null && (Keyboard.current.cKey.wasPressedThisFrame || Keyboard.current.leftCtrlKey.wasPressedThisFrame))
+                {
+                    CrouchTriggered = true;
+                    OnCrouch?.Invoke();
+                }
             }
         }
 

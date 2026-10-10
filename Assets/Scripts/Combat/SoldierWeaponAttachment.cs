@@ -53,10 +53,19 @@ namespace Roadbound.Combat
 
         public void SetupAttachment()
         {
+            var anim = GetComponent<Animator>();
+
             // 1. Locate character right hand bone
             if (rightHandBone == null)
             {
-                rightHandBone = FindBone(transform, targetBoneName);
+                if (anim != null && anim.isHuman)
+                {
+                    rightHandBone = anim.GetBoneTransform(HumanBodyBones.RightHand);
+                }
+                if (rightHandBone == null)
+                {
+                    rightHandBone = FindBone(transform, targetBoneName);
+                }
             }
 
             if (rightHandBone == null)
@@ -153,7 +162,6 @@ namespace Roadbound.Combat
             }
 
             // 5. Verify Animator setup on this character
-            var anim = GetComponent<Animator>();
             if (anim != null)
             {
                 anim.applyRootMotion = false;
@@ -187,6 +195,7 @@ namespace Roadbound.Combat
                 // If in Edit Mode and not playing, evaluate Idle pose to prevent visual T-pose in Editor Game/Scene views
                 if (!Application.isPlaying && anim.runtimeAnimatorController != null && anim.avatar != null && anim.avatar.isValid)
                 {
+                    anim.WriteDefaultValues();
                     anim.Update(0f);
                 }
 #endif
