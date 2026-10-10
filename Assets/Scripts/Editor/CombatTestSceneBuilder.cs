@@ -48,10 +48,14 @@ namespace Roadbound.Editor
             var groundRenderer = ground.GetComponent<MeshRenderer>();
             if (groundRenderer != null)
             {
-                Material groundMat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
-                groundMat.color = new Color(0.22f, 0.24f, 0.26f);
-                groundMat.SetFloat("_Smoothness", 0.2f);
-                groundRenderer.material = groundMat;
+                Material groundMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Ground_URP.mat");
+                if (groundMat == null)
+                {
+                    groundMat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+                    groundMat.color = new Color(0.22f, 0.24f, 0.26f);
+                    groundMat.SetFloat("_Smoothness", 0.2f);
+                }
+                groundRenderer.sharedMaterial = groundMat;
             }
 
             // 2. Lighting (Directional Sun)
@@ -230,9 +234,13 @@ namespace Roadbound.Editor
             var torsoRenderer = torso.GetComponent<MeshRenderer>();
             if (torsoRenderer != null)
             {
-                Material dummyMat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
-                dummyMat.color = color;
-                torsoRenderer.material = dummyMat;
+                Material dummyMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Target_Dummy_URP.mat");
+                if (dummyMat == null)
+                {
+                    dummyMat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+                    dummyMat.color = color;
+                }
+                torsoRenderer.sharedMaterial = dummyMat;
             }
 
             // Head Primitive (Headshot hit zone)
@@ -246,9 +254,13 @@ namespace Roadbound.Editor
             var headRenderer = head.GetComponent<MeshRenderer>();
             if (headRenderer != null)
             {
-                Material headMat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
-                headMat.color = new Color(0.95f, 0.85f, 0.65f);
-                headRenderer.material = headMat;
+                Material headMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Target_Head_URP.mat");
+                if (headMat == null)
+                {
+                    headMat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+                    headMat.color = new Color(0.95f, 0.85f, 0.65f);
+                }
+                headRenderer.sharedMaterial = headMat;
             }
 
             // Target Component

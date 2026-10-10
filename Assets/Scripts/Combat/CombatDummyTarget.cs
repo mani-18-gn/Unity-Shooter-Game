@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Roadbound.Core;
 
@@ -18,7 +19,7 @@ namespace Roadbound.Combat
         [SerializeField] private Color damageFlashColor = Color.red;
         [SerializeField] private Color deadColor = Color.gray;
 
-        private Material targetMaterial;
+        private readonly List<Material> targetMaterials = new List<Material>();
         private Coroutine flashCoroutine;
         private bool isDead = false;
 
@@ -32,14 +33,56 @@ namespace Roadbound.Combat
         private void Awake()
         {
             currentHealth = maxHealth;
-            if (targetRenderer == null) targetRenderer = GetComponentInChildren<Renderer>();
-            if (targetRenderer != null)
+            InitMaterials();
+        }
+
+        private void InitMaterials()
+        {
+            targetMaterials.Clear();
+            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+            Shader urpLit = Shader.Find("Universal Render Pipeline/Lit");
+
+            foreach (var r in renderers)
             {
-                targetMaterial = targetRenderer.material;
-                if (targetMaterial != null)
+                if (r == null) continue;
+                Material mat = r.material;
+                if (mat != null)
                 {
-                    targetMaterial.color = normalColor;
+                    // Fallback to URP Lit if an error shader or legacy standard shader is present
+                    if (urpLit != null && (mat.shader == null || mat.shader.name == "Standard" || mat.shader.name.Contains("Error") || mat.shader.name.Contains("InternalErrorShader")))
+                    {
+                        mat.shader = urpLit;
+                    }
+
+                    if (normalColor != Color.white)
+                    {
+                        SetMaterialColor(mat, normalColor);
+                    }
+                    targetMaterials.Add(mat);
                 }
+            }
+
+            if (targetRenderer == null && renderers.Length > 0)
+            {
+                targetRenderer = renderers[0];
+            }
+        }
+
+        private void SetMaterialColor(Material mat, Color col)
+        {
+            if (mat == null) return;
+            mat.color = col;
+            if (mat.HasProperty("_BaseColor"))
+            {
+                mat.SetColor("_BaseColor", col);
+            }
+        }
+
+        private void ApplyColorToAll(Color col)
+        {
+            for (int i = 0; i < targetMaterials.Count; i++)
+            {
+                SetMaterialColor(targetMaterials[i], col);
             }
         }
 
@@ -58,7 +101,7 @@ namespace Roadbound.Combat
 
             OnDamaged?.Invoke(effectiveDamage, isHeadshot);
 
-            if (targetRenderer != null)
+            if (targetMaterials.Count > 0)
             {
                 if (flashCoroutine != null) StopCoroutine(flashCoroutine);
                 flashCoroutine = StartCoroutine(DamageFlashRoutine());
@@ -79,14 +122,11 @@ namespace Roadbound.Combat
 
         private IEnumerator DamageFlashRoutine()
         {
-            if (targetMaterial != null)
+            ApplyColorToAll(damageFlashColor);
+            yield return new WaitForSeconds(0.12f);
+            if (!isDead)
             {
-                targetMaterial.color = damageFlashColor;
-                yield return new WaitForSeconds(0.12f);
-                if (!isDead)
-                {
-                    targetMaterial.color = normalColor;
-                }
+                ApplyColorToAll(normalColor);
             }
         }
 
@@ -96,10 +136,7 @@ namespace Roadbound.Combat
             isDead = true;
             Debug.Log($"[{targetName}] Destroyed / Eliminated!");
 
-            if (targetMaterial != null)
-            {
-                targetMaterial.color = deadColor;
-            }
+            ApplyColorToAll(deadColor);
 
             // Tip over backward if rigidbody exists
             Rigidbody rb = GetComponent<Rigidbody>();
@@ -116,14 +153,13 @@ namespace Roadbound.Combat
         {
             isDead = false;
             currentHealth = maxHealth;
-            if (targetMaterial != null)
-            {
-                targetMaterial.color = normalColor;
-            }
+            ApplyColorToAll(normalColor);
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null)
             {
                 rb.isKinematic = true;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
             }
         }
     }
