@@ -98,25 +98,31 @@ namespace Roadbound.Player
         private void Update()
         {
             // 1. Movement & Look
+            Vector2 move = Vector2.zero;
             if (moveAction != null)
-                MoveInput = moveAction.ReadValue<Vector2>();
-            else if (Keyboard.current != null)
+                move = moveAction.ReadValue<Vector2>();
+
+            // Direct keyboard fallback if action asset binding did not produce vector
+            if (move.sqrMagnitude < 0.001f && Keyboard.current != null)
             {
-                float x = (Keyboard.current.dKey.isPressed ? 1f : 0f) - (Keyboard.current.aKey.isPressed ? 1f : 0f);
-                float y = (Keyboard.current.wKey.isPressed ? 1f : 0f) - (Keyboard.current.sKey.isPressed ? 1f : 0f);
-                MoveInput = new Vector2(x, y);
+                float x = (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed ? 1f : 0f) - 
+                          (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed ? 1f : 0f);
+                float y = (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed ? 1f : 0f) - 
+                          (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed ? 1f : 0f);
+                move = new Vector2(x, y);
             }
+            MoveInput = move;
 
             if (lookAction != null)
                 LookInput = lookAction.ReadValue<Vector2>();
             else if (Mouse.current != null)
                 LookInput = Mouse.current.delta.ReadValue();
 
-            // 2. Sprinting
-            if (sprintAction != null)
-                IsSprinting = sprintAction.IsPressed();
-            else if (Keyboard.current != null)
-                IsSprinting = Keyboard.current.leftShiftKey.isPressed;
+            // 2. Sprinting (Hold Left Shift or Right Shift, Gamepad Left Stick, or Sprint Action)
+            bool isShiftKey = Keyboard.current != null && (Keyboard.current.leftShiftKey.isPressed || Keyboard.current.rightShiftKey.isPressed);
+            bool isGamepadSprint = Gamepad.current != null && Gamepad.current.leftStickButton.isPressed;
+            bool isActionSprint = sprintAction != null && sprintAction.IsPressed();
+            IsSprinting = isShiftKey || isGamepadSprint || isActionSprint;
 
             // 3. Firing (Attack)
             if (attackAction != null)
@@ -200,5 +206,10 @@ namespace Roadbound.Player
         {
             OnNextWeapon?.Invoke();
         }
+
+#if UNITY_EDITOR
+        public void SetMoveInputForTesting(Vector2 move) => MoveInput = move;
+        public void SetSprintingForTesting(bool sprinting) => IsSprinting = sprinting;
+#endif
     }
 }

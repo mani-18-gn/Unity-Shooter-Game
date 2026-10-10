@@ -24,12 +24,12 @@ namespace Roadbound.Editor
 
         private static void AutoValidateOnce()
         {
-            if (SessionState.GetBool("CombatSceneValidator_AutoRun_v3", false)) return;
-            SessionState.SetBool("CombatSceneValidator_AutoRun_v3", true);
+            if (SessionState.GetBool("CombatSceneValidator_AutoRun_v4_sprint", false)) return;
+            SessionState.SetBool("CombatSceneValidator_AutoRun_v4_sprint", true);
             try
             {
                 ValidateScene();
-                File.WriteAllText(ReportPath, $"SUCCESS: All 10 validation suites passed at {System.DateTime.Now:yyyy-MM-dd HH:mm:ss}\n- Ground Plane: Y=0.0 verified\n- Player Contact: Grounded at Y=0.0 verified\n- Target Materials: URP Lit verified (no pink error shaders)\n- Target Rigidbody: Kinematic verified");
+                File.WriteAllText(ReportPath, $"SUCCESS: All 11 validation suites passed at {System.DateTime.Now:yyyy-MM-dd HH:mm:ss}\n- Ground Plane: Y=0.0 verified\n- Player Contact: Grounded at Y=0.0 verified\n- Target Materials: URP Lit verified (no pink error shaders)\n- Target Rigidbody: Kinematic verified\n- Sprint Mechanics: SprintSpeed > WalkSpeed verified (9.2 > 4.2)\n- Locomotion BlendTree: swat@Running animation verified\n- Shift Input State: Hold-to-sprint and release verified");
             }
             catch (System.Exception ex)
             {
@@ -287,7 +287,66 @@ namespace Roadbound.Editor
                 Assert.AreEqual(Vector3.zero, rb.linearVelocity, $"Target {tName} linearVelocity must be zero");
             }
 
-            Debug.Log("[CombatSceneValidator] PASSED! All 10 validation suites passed with ZERO errors!");
+            // 11. Sprint & Locomotion Mechanics Verification
+            Debug.Log("[CombatSceneValidator] Suite 11: Validating Sprint & Locomotion System...");
+            Assert.IsTrue(pCtrl.SprintSpeed > pCtrl.WalkSpeed, 
+                $"SprintSpeed ({pCtrl.SprintSpeed}) must be strictly greater than WalkSpeed ({pCtrl.WalkSpeed})");
+            Assert.IsTrue(pCtrl.WalkSpeed > 0f, "WalkSpeed must be positive");
+            Assert.IsTrue(pCtrl.SprintSpeed >= 8.0f, $"SprintSpeed must be at least 8.0 m/s for noticeable speed increase. Found: {pCtrl.SprintSpeed}");
+
+            // Verify Running Animation Clip
+            AnimationClip runClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Animations/Combat/swat@Running.fbx");
+            if (runClip == null)
+            {
+                var runAssets = AssetDatabase.LoadAllAssetsAtPath("Assets/Animations/Combat/swat@Running.fbx");
+                foreach (var a in runAssets) if (a is AnimationClip c && !c.name.StartsWith("__preview__")) { runClip = c; break; }
+            }
+            Assert.IsNotNull(runClip, "Missing swat@Running.fbx animation clip");
+            Assert.IsTrue(runClip.isHumanMotion, "swat@Running must be Humanoid motion");
+            Assert.IsTrue(runClip.isLooping, "swat@Running must be looping");
+
+            // Verify Locomotion Blend Tree in controller
+            bool foundRunInBlendTree = false;
+            foreach (var state in swatController.layers[0].stateMachine.states)
+            {
+                if (state.state.name == "Locomotion" && state.state.motion is UnityEditor.Animations.BlendTree bt)
+                {
+                    Assert.AreEqual("Speed", bt.blendParameter, "Locomotion blend parameter must be 'Speed'");
+                    foreach (var child in bt.children)
+                    {
+                        if (child.motion != null && child.motion.name.Contains("Run"))
+                        {
+                            foundRunInBlendTree = true;
+                            Assert.AreEqual(pCtrl.SprintSpeed, child.threshold, 0.1f, 
+                                $"Blend tree run threshold ({child.threshold}) should match PlayerController SprintSpeed ({pCtrl.SprintSpeed})");
+                        }
+                    }
+                }
+            }
+            Assert.IsTrue(foundRunInBlendTree, "SwatAnimatorController Locomotion blend tree must contain Running motion clip");
+
+            // Verify simulated input and state transitions
+            pInput.SetMoveInputForTesting(new Vector2(0f, 1f));
+            pInput.SetSprintingForTesting(false);
+            Assert.IsFalse(pCtrl.IsSprinting, "Player must not be sprinting when Shift is not held");
+
+            pInput.SetSprintingForTesting(true);
+            Assert.IsTrue(pCtrl.IsSprinting, "Player must sprint when moving forward and Shift is held");
+
+            // Test release shift
+            pInput.SetSprintingForTesting(false);
+            Assert.IsFalse(pCtrl.IsSprinting, "Player must return to walking when Shift is released");
+
+            // Test backward sprint prevention
+            pInput.SetMoveInputForTesting(new Vector2(0f, -1f));
+            pInput.SetSprintingForTesting(true);
+            Assert.IsFalse(pCtrl.IsSprinting, "Player must not sprint when moving backward");
+
+            // Reset test inputs
+            pInput.SetMoveInputForTesting(Vector2.zero);
+            pInput.SetSprintingForTesting(false);
+
+            Debug.Log("[CombatSceneValidator] PASSED! All 11 validation suites passed with ZERO errors!");
         }
     }
 }

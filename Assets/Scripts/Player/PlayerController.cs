@@ -35,6 +35,7 @@ namespace Roadbound.Player
         [Header("References")]
         [SerializeField] private PlayerInputHandler inputHandler;
         [SerializeField] private PlayerCameraController cameraController;
+        [SerializeField] private PlayerHealth playerHealth;
 
         // Components
         private CharacterController characterController;
@@ -47,17 +48,55 @@ namespace Roadbound.Player
         private bool isAiming;
         private float currentTargetSpeed;
 
+        public float WalkSpeed
+        {
+            get => walkSpeed;
+            set => walkSpeed = Mathf.Max(0.1f, value);
+        }
+
+        public float SprintSpeed
+        {
+            get => sprintSpeed;
+            set => sprintSpeed = Mathf.Max(walkSpeed + 0.1f, value);
+        }
+
+        public float CrouchSpeed
+        {
+            get => crouchSpeed;
+            set => crouchSpeed = Mathf.Max(0.1f, value);
+        }
+
+        public float AimSpeed
+        {
+            get => aimSpeed;
+            set => aimSpeed = Mathf.Max(0.1f, value);
+        }
+
+        public float CurrentSpeed => currentVelocity.magnitude;
+        public float CurrentTargetSpeed => currentTargetSpeed;
+        public bool IsDead => playerHealth != null && playerHealth.IsDead;
         public bool IsGrounded => isGrounded;
         public bool IsCrouching => isCrouching;
         public bool IsAiming => isAiming;
-        public bool IsSprinting => inputHandler != null && inputHandler.IsSprinting && !isCrouching && !isAiming && inputHandler.MoveInput.y > 0.1f;
-        public Vector3 Velocity => characterController != null ? characterController.velocity : Vector3.zero;
+        public bool IsSprinting => !IsDead && inputHandler != null && inputHandler.IsSprinting && !isCrouching && !isAiming && inputHandler.MoveInput.y > 0.1f;
+        public Vector3 Velocity => new Vector3(currentVelocity.x, verticalVelocity, currentVelocity.z);
+        public Vector3 HorizontalVelocity => currentVelocity;
+
+        private void OnValidate()
+        {
+            if (sprintSpeed <= walkSpeed)
+            {
+                sprintSpeed = walkSpeed + 1.0f;
+            }
+        }
 
         private void Awake()
         {
             characterController = GetComponent<CharacterController>();
             if (inputHandler == null) inputHandler = GetComponent<PlayerInputHandler>();
             if (cameraController == null) cameraController = FindFirstObjectByType<PlayerCameraController>();
+            if (playerHealth == null) playerHealth = GetComponent<PlayerHealth>();
+            if (playerHealth == null) playerHealth = GetComponentInParent<PlayerHealth>();
         }
 
         private void OnEnable()
@@ -89,7 +128,7 @@ namespace Roadbound.Player
 
         private void CheckGrounded()
         {
-            isGrounded = characterController.isGrounded;
+            isGrounded = characterController != null && characterController.isGrounded;
             if (isGrounded && verticalVelocity < 0f)
             {
                 verticalVelocity = groundedStickForce;
@@ -98,6 +137,13 @@ namespace Roadbound.Player
 
         private void HandleAiming()
         {
+            if (IsDead)
+            {
+                isAiming = false;
+                if (cameraController != null) cameraController.SetAimState(false);
+                return;
+            }
+
             isAiming = inputHandler != null && inputHandler.AimHeld;
             if (cameraController != null)
             {
@@ -107,6 +153,23 @@ namespace Roadbound.Player
 
         private void HandleMovement()
         {
+            if (IsDead)
+            {
+                currentTargetSpeed = 0f;
+                currentVelocity = Vector3.MoveTowards(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+                if (!isGrounded)
+                {
+                    verticalVelocity += gravity * Time.deltaTime;
+                }
+                Vector3 deadMove = currentVelocity;
+                deadMove.y = verticalVelocity;
+                if (characterController != null)
+                {
+                    characterController.Move(deadMove * Time.deltaTime);
+                }
+                return;
+            }
+
             Vector2 input = inputHandler != null ? inputHandler.MoveInput : Vector2.zero;
             Transform camTransform = cameraController != null && cameraController.Camera != null 
                 ? cameraController.Camera.transform 
@@ -149,11 +212,16 @@ namespace Roadbound.Player
             Vector3 finalMove = currentVelocity;
             finalMove.y = verticalVelocity;
 
-            characterController.Move(finalMove * Time.deltaTime);
+            if (characterController != null)
+            {
+                characterController.Move(finalMove * Time.deltaTime);
+            }
         }
 
         private void HandleRotation()
         {
+            if (IsDead) return;
+
             Transform camTransform = cameraController != null && cameraController.Camera != null 
                 ? cameraController.Camera.transform 
                 : (Camera.main != null ? Camera.main.transform : transform);
@@ -180,6 +248,8 @@ namespace Roadbound.Player
 
         private void HandleJump()
         {
+            if (IsDead) return;
+
             if (isGrounded && !isCrouching)
             {
                 verticalVelocity = jumpForce;
@@ -193,6 +263,8 @@ namespace Roadbound.Player
 
         private void HandleCrouchToggle()
         {
+            if (IsDead) return;
+
             if (isGrounded)
             {
                 isCrouching = !isCrouching;
@@ -201,11 +273,24 @@ namespace Roadbound.Player
 
         private void UpdateCrouchDimensions()
         {
+            if (characterController == null) return;
+
             float targetHeight = isCrouching ? crouchingHeight : standingHeight;
             Vector3 targetCenter = isCrouching ? crouchingCenter : standingCenter;
 
             characterController.height = Mathf.Lerp(characterController.height, targetHeight, Time.deltaTime * 10f);
             characterController.center = Vector3.Lerp(characterController.center, targetCenter, Time.deltaTime * 10f);
         }
+
+#if UNITY_EDITOR
+        public void SimulateUpdateForTesting(float deltaTime)
+        {
+            CheckGrounded();
+            HandleAiming();
+            HandleMovement();
+            HandleRotation();
+            UpdateCrouchDimensions();
+        }
+#endif
     }
 }
