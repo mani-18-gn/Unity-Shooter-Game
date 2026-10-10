@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Roadbound.Core;
 using Roadbound.Player;
+using Roadbound.Combat;
 
 namespace Roadbound.AI
 {
@@ -43,6 +44,7 @@ namespace Roadbound.AI
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
         public bool IsDead => isDead;
+        public Transform MuzzlePoint { get => muzzlePoint; set => muzzlePoint = value; }
 
         public event Action<float, bool> OnDamaged;
         public event Action OnDied;
@@ -65,6 +67,15 @@ namespace Roadbound.AI
 #if UNITY_EDITOR
                 gunShotSound = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Combat/GunShot.mp3");
 #endif
+            }
+
+            if (muzzlePoint == null)
+            {
+                var attachment = GetComponentInChildren<SoldierWeaponAttachment>();
+                if (attachment != null && attachment.MuzzlePointTransform != null)
+                {
+                    muzzlePoint = attachment.MuzzlePointTransform;
+                }
             }
         }
 

@@ -1974,6 +1974,37 @@ MonoBehaviour:
   playerHealth: {fileID: 2003}
   playerController: {fileID: 2005}
   weaponController: {fileID: 2009}
+--- !u!1 &196690226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 196690227}
+  m_Layer: 0
+  m_Name: LeftHandGrip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &196690227
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196690226}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.3355915, y: -0.64808065, z: -0.6315843, w: 0.26167002}
+  m_LocalPosition: {x: -0.06, y: -0.01, z: 0.18}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 814384636}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &496455443
 GameObject:
   m_ObjectHideFlags: 0
@@ -1999,7 +2030,7 @@ Transform:
   m_GameObject: {fileID: 496455443}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.04, z: 0.52}
+  m_LocalPosition: {x: 0, y: 0.045, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3539,13 +3570,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Roadbound.Combat.SoldierWeaponAttachment
   targetBoneName: RightHand
-  socketLocalPosition: {x: -0.02, y: 0.08, z: 0.12}
-  socketLocalEuler: {x: 0, y: 90, z: 0}
-  muzzleLocalOffset: {x: 0, y: 0.04, z: 0.52}
+  socketLocalPosition: {x: -0.01, y: 0.07, z: 0.03}
+  socketLocalEuler: {x: 273.13, y: 179.84, z: 279.89}
+  weaponModelOffset: {x: 0, y: 0.08, z: 0.1}
+  weaponModelEuler: {x: 0, y: 0, z: 0}
+  weaponModelScale: {x: 1, y: 1, z: 1}
+  muzzleLocalOffset: {x: 0, y: 0.045, z: 0.5}
+  enableLeftHandIK: 1
+  leftHandIKWeight: 1
+  leftGripLocalOffset: {x: -0.06, y: -0.01, z: 0.18}
+  leftGripLocalEuler: {x: 276.14, y: 127.6, z: 102.44}
+  enableAimLookAtIK: 1
+  aimLookAtWeight: 0.75
   rightHandBone: {fileID: 760962741}
   socketTransform: {fileID: 1048363407}
   weaponModelTransform: {fileID: 814384636}
   muzzlePointTransform: {fileID: 496455444}
+  leftHandGripTransform: {fileID: 196690227}
 --- !u!114 &760962744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3625,6 +3666,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: cebcf1031f000ad45971b4687601aaca, type: 3}
       insertIndex: -1
       addedObject: {fileID: 496455444}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: cebcf1031f000ad45971b4687601aaca, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 196690227}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cebcf1031f000ad45971b4687601aaca, type: 3}
 --- !u!4 &814384636 stripped
@@ -3656,8 +3700,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1048363406}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.02, y: 0.08, z: 0.12}
+  m_LocalRotation: {x: -0.4680314, y: 0.55520034, z: 0.525602, w: 0.4432175}
+  m_LocalPosition: {x: -0.01, y: 0.07, z: 0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

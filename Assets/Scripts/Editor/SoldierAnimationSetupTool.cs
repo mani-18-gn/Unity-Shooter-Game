@@ -19,7 +19,7 @@ namespace Roadbound.Editor
         private const string ControllerPath = "Assets/Animations/Combat/SwatAnimatorController.controller";
         private const string Ak47ModelPath = "Assets/Weapons/AK47.obj";
         private const string Ak47MatPath = "Assets/Weapons/AK47_URP.mat";
-        private const string AutoRunKey = "Roadbound_SoldierFix_Completed_v5";
+        private const string AutoRunKey = "Roadbound_SoldierFix_Completed_v6_WeaponOrientation";
 
         static SoldierAnimationSetupTool()
         {
@@ -185,6 +185,27 @@ namespace Roadbound.Editor
             ClearTransitions(crouchState);
             if (fireState != null) ClearTransitions(fireState);
 
+            // 0. Ensure IK Pass is enabled on layer 0 for Left Hand IK & Look-At IK
+            if (ctrl.layers.Length > 0 && !ctrl.layers[0].iKPass)
+            {
+                var layers = ctrl.layers;
+                layers[0].iKPass = true;
+                ctrl.layers = layers;
+            }
+
+            // Find or create Aim state
+            AnimatorState aimState = null;
+            foreach (var childState in rootSm.states)
+            {
+                if (childState.state.name == "Aim") aimState = childState.state;
+            }
+            if (aimState == null && fireState != null)
+            {
+                aimState = rootSm.AddState("Aim", new Vector3(560, 160, 0));
+                aimState.motion = fireState.motion;
+                aimState.speed = 0.001f; // holds aimed pose
+            }
+
             // 1. Idle Transitions
             // Idle -> Locomotion
             var idleToLoco = idleState.AddTransition(locomotionState);
@@ -197,6 +218,15 @@ namespace Roadbound.Editor
             idleToCrouch.hasExitTime = false;
             idleToCrouch.duration = 0.15f;
             idleToCrouch.AddCondition(AnimatorConditionMode.If, 0, "IsCrouching");
+
+            // Idle -> Aim (stationary aiming)
+            if (aimState != null)
+            {
+                var idleToAim = idleState.AddTransition(aimState);
+                idleToAim.hasExitTime = false;
+                idleToAim.duration = 0.15f;
+                idleToAim.AddCondition(AnimatorConditionMode.If, 0, "IsAiming");
+            }
 
             // 2. Locomotion Transitions
             // Locomotion -> Idle
@@ -225,9 +255,45 @@ namespace Roadbound.Editor
             crouchToIdle.duration = 0.15f;
             crouchToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsCrouching");
 
-            // 4. Fire Transitions
+            // 4. Aim State Transitions
+            if (aimState != null)
+            {
+                ClearTransitions(aimState);
+
+                var aimToIdle = aimState.AddTransition(idleState);
+                aimToIdle.hasExitTime = false;
+                aimToIdle.duration = 0.15f;
+                aimToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsAiming");
+
+                var aimToLoco = aimState.AddTransition(locomotionState);
+                aimToLoco.hasExitTime = false;
+                aimToLoco.duration = 0.15f;
+                aimToLoco.AddCondition(AnimatorConditionMode.Greater, 0.2f, "Speed");
+
+                var aimToCrouch = aimState.AddTransition(crouchState);
+                aimToCrouch.hasExitTime = false;
+                aimToCrouch.duration = 0.15f;
+                aimToCrouch.AddCondition(AnimatorConditionMode.If, 0, "IsCrouching");
+
+                var aimToFire = aimState.AddTransition(fireState);
+                aimToFire.hasExitTime = false;
+                aimToFire.duration = 0.05f;
+                aimToFire.AddCondition(AnimatorConditionMode.If, 0, "Fire");
+            }
+
+            // 5. Fire Transitions
             if (fireState != null)
             {
+                // Fire -> Aim (if still aiming)
+                if (aimState != null)
+                {
+                    var fireToAim = fireState.AddTransition(aimState);
+                    fireToAim.hasExitTime = true;
+                    fireToAim.exitTime = 0.85f;
+                    fireToAim.duration = 0.12f;
+                    fireToAim.AddCondition(AnimatorConditionMode.If, 0, "IsAiming");
+                }
+
                 // Fire -> CrouchLocomotion (if crouched)
                 var fireToCrouch = fireState.AddTransition(crouchState);
                 fireToCrouch.hasExitTime = true;
@@ -249,7 +315,7 @@ namespace Roadbound.Editor
                 fireToIdle.duration = 0.12f;
             }
 
-            // 5. AnyState Transitions
+            // 6. AnyState Transitions
             bool hasAnyToFire = false;
             bool hasAnyToDeath = false;
             foreach (var ast in rootSm.anyStateTransitions)
@@ -401,6 +467,22 @@ namespace Roadbound.Editor
             // 6. Setup SoldierWeaponAttachment component on Ch15
             var attachment = ch15Instance.GetComponent<SoldierWeaponAttachment>();
             if (attachment == null) attachment = ch15Instance.AddComponent<SoldierWeaponAttachment>();
+
+            var serAttachment = new SerializedObject(attachment);
+            serAttachment.FindProperty("socketLocalPosition").vector3Value = new Vector3(-0.01f, 0.07f, 0.03f);
+            serAttachment.FindProperty("socketLocalEuler").vector3Value = new Vector3(273.13f, 179.84f, 279.89f);
+            serAttachment.FindProperty("weaponModelOffset").vector3Value = new Vector3(0f, 0.08f, 0.10f);
+            serAttachment.FindProperty("weaponModelEuler").vector3Value = Vector3.zero;
+            serAttachment.FindProperty("weaponModelScale").vector3Value = Vector3.one;
+            serAttachment.FindProperty("muzzleLocalOffset").vector3Value = new Vector3(0f, 0.045f, 0.50f);
+            serAttachment.FindProperty("enableLeftHandIK").boolValue = true;
+            serAttachment.FindProperty("leftHandIKWeight").floatValue = 1.0f;
+            serAttachment.FindProperty("leftGripLocalOffset").vector3Value = new Vector3(-0.06f, -0.01f, 0.18f);
+            serAttachment.FindProperty("leftGripLocalEuler").vector3Value = new Vector3(276.14f, 127.60f, 102.44f);
+            serAttachment.FindProperty("enableAimLookAtIK").boolValue = true;
+            serAttachment.FindProperty("aimLookAtWeight").floatValue = 0.75f;
+            serAttachment.ApplyModifiedProperties();
+
             attachment.SetupAttachment();
 
             // 7. Hide primitive capsules while preserving GameObjects for validator

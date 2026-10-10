@@ -208,6 +208,27 @@ namespace Roadbound.Editor
             Assert.IsNotNull(attachmentComp.RightHandBone, "RightHandBone not found on soldier rig");
             Assert.IsNotNull(attachmentComp.SocketTransform, "SocketTransform not found under soldier hand bone");
             Assert.IsNotNull(attachmentComp.WeaponModelTransform, "WeaponModelTransform not found on soldier weapon socket");
+            Assert.IsNotNull(attachmentComp.LeftHandGripTransform, "LeftHandGripTransform not found on weapon model");
+            Assert.IsNotNull(attachmentComp.MuzzlePointTransform, "MuzzlePointTransform not found on weapon model");
+            Assert.IsTrue(attachmentComp.EnableLeftHandIK, "Left Hand IK should be enabled");
+            Assert.IsTrue(swatController.layers[0].iKPass, "SwatAnimatorController layer 0 must have iKPass enabled for Left Hand IK");
+
+            // Verify rifle orientation (barrel points forward, sights up, not upside down or sideways)
+            var fireClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Animations/Combat/swat@Firing Rifle.fbx");
+            if (fireClip == null)
+            {
+                var assets = AssetDatabase.LoadAllAssetsAtPath("Assets/Animations/Combat/swat@Firing Rifle.fbx");
+                foreach (var a in assets) if (a is AnimationClip c && !c.name.StartsWith("__preview__")) { fireClip = c; break; }
+            }
+            if (fireClip != null)
+            {
+                fireClip.SampleAnimation(ch15.gameObject, 0.1f);
+                attachmentComp.SetupAttachment();
+                float rifleFwdAngle = Vector3.Angle(attachmentComp.WeaponModelTransform.forward, ch15.forward);
+                float rifleUpAngle = Vector3.Angle(attachmentComp.WeaponModelTransform.up, ch15.up);
+                Assert.Less(rifleFwdAngle, 15.0f, $"Rifle barrel must face forward in aiming direction! Angle was {rifleFwdAngle:F1} deg");
+                Assert.Less(rifleUpAngle, 25.0f, $"Rifle must be right-side up! Angle was {rifleUpAngle:F1} deg");
+            }
 
             // Empirical Kinematic T-Pose Transition Verification:
             Transform rightHandBone = soldierAnim.GetBoneTransform(HumanBodyBones.RightHand);
