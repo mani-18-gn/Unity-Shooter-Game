@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f60718293a4b5c6d7e8f90a1, type: 3}
+  m_Name: Vehicle_ThunderboltMoto
+  m_EditorClassIdentifier: 
+  vehicleId: thunderbolt_moto
+  vehicleName: Thunderbolt 1200cc Streetfighter
+  vehicleClass: High-Performance Superbike
+  isUnlocked: 1
+  mass: 210
+  topSpeedMph: 190
+  maxEngineForce: 4200
+  brakeForce: 6000
+  steerAngleMax: 34
+  suspensionRestLength: 0.35
+  springStiffness: 22000
+  springDamping: 2400
+  topSpeedStat: 98
+  accelerationStat: 98
+  handlingStat: 95
+  brakingStat: 88
+  offroadStat: 25
+  durabilityStat: 45
+  defaultUpgrades:
+    engineStage: 3
+    brakesStage: 3
+    suspensionStage: 3
+    tiresStage: 3
+  paintColor: {r: 0.839, g: 0.157, b: 0.157, a: 1}
+  paintFinish: gloss
+  rimColor: {r: 0.831, g: 0.686, b: 0.216, a: 1}
+  windowTint: 0
+  defaultHealth: 100
+  defaultFuel: 100

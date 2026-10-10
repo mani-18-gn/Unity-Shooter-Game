@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f60718293a4b5c6d7e8f90, type: 3}
+  m_Name: Weapon_UMP
+  m_EditorClassIdentifier: 
+  weaponId: ump
+  weaponName: UMP-45 Tactical SMG
+  category: 4
+  slot: 0
+  description: High-mobility close quarters submachine gun with high cyclic rate and
+    rapid reload.
+  caliber: 9mm
+  magCapacity: 25
+  pellets: 1
+  damage: 28
+  fireRate: 0.088
+  isAutomatic: 1
+  range: 220
+  spread: 0.025
+  muzzleVelocity: 400
+  reloadTime: 1.7
+  recoilPitch: 0.04
+  recoilYawSpread: 0.02
+  scopeType: 2

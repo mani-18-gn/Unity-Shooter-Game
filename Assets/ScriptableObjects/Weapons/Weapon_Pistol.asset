@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f60718293a4b5c6d7e8f90, type: 3}
+  m_Name: Weapon_Pistol
+  m_EditorClassIdentifier: 
+  weaponId: pistol
+  weaponName: Glock 19 Tactical Sidearm
+  category: 6
+  slot: 1
+  description: Dependable polymer 9mm semi-automatic service sidearm. Swift draw and
+    fast reload.
+  caliber: 9mm
+  magCapacity: 15
+  pellets: 1
+  damage: 26
+  fireRate: 0.16
+  isAutomatic: 0
+  range: 120
+  spread: 0.02
+  muzzleVelocity: 375
+  reloadTime: 1.4
+  recoilPitch: 0.05
+  recoilYawSpread: 0.02
+  scopeType: 1

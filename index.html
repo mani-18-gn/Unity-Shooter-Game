@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HORIZEN ISLANDS - Offline Open World</title>
+  <meta name="description" content="HORIZEN ISLANDS: Blackshore Island. A serious, photorealistic offline single-player open-world action-driving game. Drive, Explore, Survive, Discover.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/ui/UIStyles.css">
+</head>
+<body class="theme-dark">
+  <div id="game-container">
+    <!-- 3D Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Cinematic Letterbox Bars -->
+    <div id="cinematic-bars" class="hidden">
+      <div class="letterbox top"></div>
+      <div class="letterbox bottom"></div>
+    </div>
+
+    <!-- HORIZEN ISLANDS - PREMIUM AAA MAIN MENU LAYER -->
+    <div id="main-menu" class="horizen-menu-overlay">
+      <!-- Living Cinematic Photorealistic Background -->
+      <div class="horizen-menu-bg">
+        <div class="horizen-bg-image"></div>
+        <canvas id="horizen-fx-canvas" class="horizen-fx-canvas"></canvas>
+        <div class="horizen-bg-vignette"></div>
+      </div>
+
+      <div class="horizen-menu-layout">
+        <!-- TOP ROW: TITLE LOGO (LEFT) & STATUS / SETTINGS (RIGHT) -->
+        <header class="horizen-header">
+          <!-- Logo & Brand in Upper-Left -->
+          <div class="horizen-brand-block">
+            <!-- Mountain Silhouette Crest -->
+            <div class="horizen-mountain-crest">
+              <svg class="mountain-silhouette-svg" viewBox="0 0 280 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 6 42 L 44 26 L 68 34 L 102 12 L 126 25 L 148 6 L 176 27 L 206 15 L 242 35 L 274 42" stroke="rgba(242, 244, 247, 0.85)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Snowcap highlights matching the key art -->
+                <polygon points="148,6 138,18 148,15 158,19" fill="#FFFFFF"/>
+                <polygon points="102,12 94,22 103,19 111,22" fill="#FFFFFF"/>
+                <polygon points="206,15 198,24 207,21 215,24" fill="#FFFFFF"/>
+                <polygon points="44,26 38,32 45,30 52,33" fill="rgba(255,255,255,0.9)"/>
+                <polygon points="242,35 236,39 243,38 249,40" fill="rgba(255,255,255,0.9)"/>
+              </svg>
+            </div>
+            <!-- Wordmark: HORI (silver) + Z (amber) + EN (silver) -->
+            <div class="horizen-wordmark" aria-label="HORIZEN ISLANDS">
+              <span class="wordmark-hori">HORI</span><span class="wordmark-z">Z</span><span class="wordmark-en">EN</span>
+            </div>
+            <!-- Subtitle: ISLANDS -->
+            <div class="horizen-subtitle">ISLANDS</div>
+            <!-- Tagline: DRIVE • EXPLORE • SURVIVE • DISCOVER -->
+            <div class="horizen-tagline">DRIVE &bull; EXPLORE &bull; SURVIVE &bull; DISCOVER</div>
+          </div>
+
+          <!-- Top-Right Status & Quick Settings -->
+          <div class="horizen-top-actions">
+            <div class="horizen-offline-pill" title="100% Offline Single-Player">
+              <span class="offline-dot"></span>
+              <span class="offline-label">OFFLINE</span>
+            </div>
+            <button id="btn-top-settings" class="horizen-settings-gear-btn" title="Settings" aria-label="Settings">
+              <svg viewBox="0 0 24 24" class="gear-icon-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- MAIN BODY: LEFT VERTICAL NAVIGATION (RIGHT SIDE STAYS CLEAN SHOWCASING THE WORLD) -->
+        <main class="horizen-main-area">
+          <nav class="horizen-nav-stack" aria-label="Main Navigation">
+            <!-- 1. CONTINUE -->
+            <button id="btn-menu-continue" class="horizen-nav-item active" data-index="0">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="7,4 20,12 7,20"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">CONTINUE</span>
+                <span class="nav-item-sub">Continue your journey</span>
+              </div>
+            </button>
+
+            <!-- 2. NEW GAME -->
+            <button id="btn-menu-newgame" class="horizen-nav-item" data-index="1">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">NEW GAME</span>
+                <span class="nav-item-sub">Start a new adventure</span>
+              </div>
+            </button>
+
+            <!-- 3. GARAGE -->
+            <button id="btn-menu-garage" class="horizen-nav-item" data-index="2">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 12l2-4h12l2 4 1 1v4a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H8a2 2 0 0 1-4 0H3a1 1 0 0 1-1-1v-4l2-1z"/>
+                  <line x1="6" y1="12" x2="18" y2="12"/>
+                  <circle cx="7" cy="15" r="1" fill="currentColor"/>
+                  <circle cx="17" cy="15" r="1" fill="currentColor"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">GARAGE</span>
+                <span class="nav-item-sub">Vehicles &amp; Upgrades</span>
+              </div>
+            </button>
+
+            <!-- 4. MAP -->
+            <button id="btn-menu-map" class="horizen-nav-item" data-index="3">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="3,6 9,3 15,6 21,3 21,18 15,21 9,18 3,21"/>
+                  <line x1="9" y1="3" x2="9" y2="18"/>
+                  <line x1="15" y1="6" x2="15" y2="21"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">MAP</span>
+                <span class="nav-item-sub">Explore the island</span>
+              </div>
+            </button>
+
+            <!-- 5. MISSIONS -->
+            <button id="btn-menu-missions" class="horizen-nav-item" data-index="4">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9"/>
+                  <circle cx="12" cy="12" r="5"/>
+                  <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">MISSIONS</span>
+                <span class="nav-item-sub">Story &amp; Side Missions</span>
+              </div>
+            </button>
+
+            <!-- 6. CHARACTER -->
+            <button id="btn-menu-character" class="horizen-nav-item" data-index="5">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4" fill="currentColor"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">CHARACTER</span>
+                <span class="nav-item-sub">Outfits &amp; Gear</span>
+              </div>
+            </button>
+
+            <!-- 7. SETTINGS -->
+            <button id="btn-menu-settings" class="horizen-nav-item" data-index="6">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">SETTINGS</span>
+                <span class="nav-item-sub">Graphics, Audio, Controls</span>
+              </div>
+            </button>
+
+            <!-- 8. EXIT GAME -->
+            <button id="btn-menu-exit" class="horizen-nav-item" data-index="7">
+              <span class="nav-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+              </span>
+              <div class="nav-item-content">
+                <span class="nav-item-title">EXIT GAME</span>
+                <span class="nav-item-sub">Close the game</span>
+              </div>
+            </button>
+          </nav>
+        </main>
+
+        <!-- MINIMAL BOTTOM UI -->
+        <footer class="horizen-footer">
+          <span class="footer-game-id">HORIZEN ISLANDS &bull; BLACKSHORE ISLAND &bull; &copy; 2026</span>
+        </footer>
+      </div>
+
+      <!-- AAA DIALOG CONFIRMATION MODAL (FOR NEW GAME / EXIT GAME) -->
+      <div id="horizen-dialog-overlay" class="horizen-dialog-overlay hidden">
+        <div class="horizen-dialog-card">
+          <div class="dialog-crest-line"></div>
+          <h2 id="horizen-dialog-title" class="dialog-title">CONFIRM ACTION</h2>
+          <p id="horizen-dialog-desc" class="dialog-desc">Are you sure you want to proceed?</p>
+          <div class="dialog-actions">
+            <button id="btn-dialog-cancel" class="dialog-btn secondary">CANCEL</button>
+            <button id="btn-dialog-confirm" class="dialog-btn primary">CONFIRM</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN-GAME HUD LAYER -->
+    <!-- IN-GAME HUD LAYER (AAA Tactical Military Survival Battle Royale) -->
+    <div id="game-hud" class="hud-overlay hidden">
+      <!-- TOP CENTER: Minimal Tactical Compass & Safe Zone -->
+      <div class="hud-tactical-top">
+        <div class="tactical-compass-container">
+          <div class="compass-viewport">
+            <div id="hud-compass-tape" class="compass-tape"></div>
+          </div>
+          <div class="compass-marker-center"></div>
+          <div class="compass-heading-badge" id="hud-compass-deg">075&deg; NE</div>
+        </div>
+
+        <!-- Subtle Translucent Safe Zone Pill -->
+        <div id="hud-safezone-banner" class="tactical-safezone-pill">
+          <span class="safezone-pulse-dot" id="safezone-icon">&bull;</span>
+          <span id="safezone-text">ZONE RESTRICTION IN <strong id="safezone-timer">01:11</strong></span>
+        </div>
+
+        <!-- Intelligent GPS Tactical Banner -->
+        <div id="hud-gps-banner" class="hud-gps-banner hidden">
+          <div class="gps-banner-icon-box" id="gps-turn-icon">&#8593;</div>
+          <div class="gps-banner-info">
+            <div class="gps-banner-dist" id="gps-turn-dist">350m</div>
+            <div class="gps-banner-text" id="gps-turn-text">HEAD TOWARDS HIGHWAY</div>
+          </div>
+          <button id="btn-gps-mute" class="gps-mute-btn" title="Toggle GPS Guidance">&#128266;</button>
+        </div>
+      </div>
+
+      <!-- TOP LEFT: Tactical Minimap Radar & Sector Notification -->
+      <div class="hud-tactical-top-left">
+        <div class="tactical-radar-card">
+          <div class="radar-header">
+            <span class="radar-tag">TACTICAL RADAR</span>
+            <span class="radar-coords">GRID 44-B</span>
+          </div>
+          <div class="radar-screen">
+            <canvas id="minimap-canvas" width="160" height="160"></canvas>
+            <div class="minimap-player-blip" id="minimap-player-blip"></div>
+            <div class="radar-sweep-line"></div>
+          </div>
+          <!-- Hidden fallback for legacy ping badge to preserve listeners -->
+          <div class="minimap-ping-badge" style="display:none;">
+            <span class="ping-num">73</span>
+          </div>
+        </div>
+
+        <!-- Cinematic Location Notification (Fades in on sector change, then fades out) -->
+        <div id="cinematic-location-banner" class="cinematic-location-card">
+          <div class="loc-sector-prefix">SECTOR RECON</div>
+          <div class="loc-district-name" id="hud-district-name">RED ROCK CANYONS</div>
+          <div class="loc-divider-bar"></div>
+        </div>
+      </div>
+
+      <!-- TOP RIGHT: Match Stats, Quick Actions & Compact Tactical Weapon HUD -->
+      <div class="hud-tactical-top-right">
+        <div class="tactical-top-bar">
+          <div class="tactical-match-stats">
+            <div class="match-stat-item">
+              <span class="stat-lbl">ALIVE</span>
+              <span class="stat-val" id="br-alive-count">34</span>
+            </div>
+            <div class="stat-divider">/</div>
+            <div class="match-stat-item">
+              <span class="stat-lbl">KILLS</span>
+              <span class="stat-val red" id="br-kill-count">7</span>
+            </div>
+          </div>
+
+          <div class="tactical-quick-actions">
+            <button id="btn-hud-day-night" class="tactical-icon-btn" title="Toggle Atmosphere [T]">
+              <span id="time-pill-icon">&#9728;&#65039;</span>
+              <span id="time-pill-text" class="sr-only">DAY</span>
+            </button>
+            <button id="btn-hud-camera-toggle" class="tactical-icon-btn" title="Toggle Camera [V]">
+              <span id="cam-pill-icon">&#128065;</span>
+              <span id="cam-pill-text" class="sr-only">3RD</span>
+            </button>
+            <button id="btn-hud-phone" class="tactical-icon-btn" title="Smartphone OS [P]">
+              <span id="phone-pill-icon">&#128241;</span>
+              <span id="phone-pill-text" class="sr-only">PHONE</span>
+            </button>
+            <button id="btn-hud-open-settings" class="tactical-icon-btn" title="Tactical Settings [Tab]">&#9881;</button>
+          </div>
+        </div>
+
+        <!-- Compact Tactical Weapon Information -->
+        <div class="tactical-weapon-hud" id="hud-weapon-card">
+          <div class="weapon-primary-card">
+            <div class="weapon-meta-row">
+              <span class="weapon-caliber-tag">7.62&times;39MM</span>
+              <span class="weapon-fire-mode">[AUTO]</span>
+            </div>
+            <div class="weapon-main-row">
+              <div class="weapon-silhouette-box">
+                <svg class="weapon-silhouette-svg" viewBox="0 0 120 40">
+                  <path d="M 5,24 L 25,24 L 32,20 L 52,20 L 55,14 L 75,14 L 78,20 L 98,20 L 105,22 L 115,22 L 115,24 L 98,24 L 82,24 L 76,34 L 66,34 L 70,24 L 50,24 L 42,35 L 34,35 L 38,26 L 5,26 Z" fill="rgba(240,246,252,0.92)"/>
+                </svg>
+              </div>
+              <div class="weapon-ammo-digits">
+                <span class="ammo-clip-num" id="hud-ammo-clip">42</span>
+                <span class="ammo-sep">/</span>
+                <span class="ammo-res-num" id="hud-ammo-reserve">42</span>
+              </div>
+            </div>
+            <button class="quick-reload-btn sr-hidden" id="btn-quick-reload">RELOAD</button>
+          </div>
+
+          <!-- Sleek Secondary Weapon Holster Slots -->
+          <div class="tactical-weapon-slots">
+            <div class="tactical-slot active" data-slot="0" title="Primary Weapon [1]">
+              <span class="slot-num">1</span>
+              <span class="sub-ammo-count">255</span>
+            </div>
+            <div class="tactical-slot" data-slot="1" title="Secondary Weapon [2]">
+              <span class="slot-num">2</span>
+              <span class="sub-ammo-count">14</span>
+            </div>
+            <div class="tactical-slot" data-slot="2" title="Melee Weapon [3]">
+              <span class="slot-num">3</span>
+              <span class="sub-ammo-count">&infin;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER RETICLE: Minimal Tactical Hairline Crosshair -->
+      <div id="weapon-crosshair" class="tactical-crosshair-root">
+        <div class="reticle-tick reticle-top"></div>
+        <div class="reticle-tick reticle-bottom"></div>
+        <div class="reticle-tick reticle-left"></div>
+        <div class="reticle-tick reticle-right"></div>
+        <div class="reticle-center-dot" id="crosshair-dot"></div>
+        <div class="reticle-spread-ring" id="crosshair-ring"></div>
+      </div>
+
+      <!-- Hit Marker (Minimalist hairline ticks with red hit/kill skull) -->
+      <div id="hit-marker" class="hit-marker-container hidden">
+        <div class="hit-tick tl"></div>
+        <div class="hit-tick tr"></div>
+        <div class="hit-tick bl"></div>
+        <div class="hit-tick br"></div>
+        <div class="hit-kill-skull hidden" id="hit-kill-skull">&#128128;</div>
+      </div>
+
+      <!-- Tactical Scope Reticle Overlays (8x, 4x, Red Dot) -->
+      <div id="scope-overlay-root" class="scope-overlay-container hidden">
+        <div id="scope-8x" class="scope-view scope-8x-view hidden">
+          <div class="scope-vignette-circle">
+            <div class="scope-crosshair-line h"></div>
+            <div class="scope-crosshair-line v"></div>
+            <div class="scope-mildots">
+              <span class="mildot d1"></span>
+              <span class="mildot d2"></span>
+              <span class="mildot d3"></span>
+              <span class="mildot d4"></span>
+            </div>
+            <div class="scope-label-8x">8.0X MAGNUM LEUPOLD</div>
+          </div>
+        </div>
+
+        <div id="scope-4x" class="scope-view scope-4x-view hidden">
+          <div class="scope-acog-reticle">
+            <div class="scope-chevron"></div>
+            <div class="scope-bdc-line l1"></div>
+            <div class="scope-bdc-line l2"></div>
+            <div class="scope-bdc-line l3"></div>
+          </div>
+        </div>
+
+        <div id="scope-reddot" class="scope-view scope-reddot-view hidden">
+          <div class="scope-holo-ring"></div>
+          <div class="scope-holo-dot"></div>
+        </div>
+      </div>
+
+      <!-- Floating Tactical Alerts -->
+      <div id="hud-no-ammo-pill" class="tactical-alert-pill hidden">
+        <span>&#9888; LOW AMMUNITION</span>
+      </div>
+
+      <div id="hud-healing-progress" class="healing-progress-pill glass-panel hidden">
+        <div class="healing-title">
+          <span class="healing-icon">&#128137;</span>
+          <span id="healing-label-text">HEALING...</span>
+        </div>
+        <div class="healing-track">
+          <div id="healing-fill-bar" class="healing-fill"></div>
+        </div>
+      </div>
+
+      <div id="hud-reload-progress" class="reload-progress-pill hidden">
+        <span id="reload-label-text">RELOADING...</span>
+        <div class="reload-track">
+          <div id="reload-fill-bar" class="reload-fill"></div>
+        </div>
+      </div>
+
+      <!-- Kill Feed Transmission Feed -->
+      <div id="hud-kill-feed" class="kill-feed-container"></div>
+
+      <!-- Screen Damage & Speed Blur Overlays -->
+      <div id="screen-damage-vignette" class="damage-vignette"></div>
+      <div id="hud-speed-blur" class="speed-blur-vignette"></div>
+
+      <!-- Contextual Interaction Prompt (Centered below crosshair) -->
+      <div id="interaction-prompt" class="tactical-interaction-pill hidden">
+        <span class="key-badge" id="prompt-key">E</span>
+        <div class="prompt-info">
+          <span class="prompt-text" id="prompt-text">ENTER VEHICLE</span>
+          <span class="prompt-subtext">APEX VANGUARD GT-R</span>
+        </div>
+      </div>
+
+      <!-- Comms Dialogue Box -->
+      <div id="comms-dialogue-box" class="comms-box glass-panel hidden">
+        <div class="comms-speaker">
+          <span class="speaker-wave">&#9776;</span>
+          <span id="comms-speaker-name">COMMAND RADIO</span>
+        </div>
+        <div class="comms-body" id="comms-text"></div>
+      </div>
+
+      <!-- BOTTOM LEFT: Compact Tactical Vitals Dock (Health, Armor, Stamina, Needs) -->
+      <div id="hud-bottom-vitals" class="tactical-vitals-dock">
+        <!-- Health (HP) -->
+        <div class="tactical-vital-row">
+          <span class="vital-tag">HP</span>
+          <div class="tactical-vital-track">
+            <div class="tactical-vital-fill hp-fill" id="hud-health-fill" style="width: 100%;"></div>
+          </div>
+          <span class="vital-num" id="hud-health-num">100</span>
+        </div>
+
+        <!-- Armor (AP) -->
+        <div class="tactical-vital-row">
+          <span class="vital-tag">AP</span>
+          <div class="tactical-vital-track">
+            <div class="tactical-vital-fill ep-fill" id="hud-ep-fill" style="width: 80%;"></div>
+          </div>
+          <span class="vital-num" id="hud-ep-num">80</span>
+        </div>
+
+        <!-- Stamina (STM) -->
+        <div class="tactical-vital-row" id="hud-stamina-row">
+          <span class="vital-tag">STM</span>
+          <div class="tactical-vital-track stm-track">
+            <div class="tactical-vital-fill stamina-fill" id="hud-stamina-fill" style="width: 100%;"></div>
+          </div>
+          <span class="vital-num" id="hud-stamina-num">100%</span>
+        </div>
+
+        <!-- Micro Survival Status Meters -->
+        <div class="hud-needs-micro-bar">
+          <span class="need-item" title="Hunger Level">NUTR <span id="need-hunger-val">94%</span></span>
+          <span class="need-divider">&bull;</span>
+          <span class="need-item" title="Hydration Level">HYDR <span id="need-thirst-val">90%</span></span>
+          <span class="need-divider">&bull;</span>
+          <span class="need-item" title="Core Body Temperature">TEMP <span id="need-temp-val">37.0&deg;C</span></span>
+        </div>
+      </div>
+
+      <!-- MOBILE TOUCH CONTROLS (Hidden on Desktop by default!) -->
+      <div id="hud-mobile-controls" class="mobile-controls-wrapper">
+        <div class="br-left-controls">
+          <div class="br-dpad-wrapper" id="hud-dpad">
+            <button class="dpad-btn dpad-up" id="btn-dpad-w" title="Move Forward">&#9650;</button>
+            <div class="dpad-horizontal-row">
+              <button class="dpad-btn dpad-left" id="btn-dpad-a" title="Move Left">&#9664;</button>
+              <div class="dpad-center-cap">&#9974;</div>
+              <button class="dpad-btn dpad-right" id="btn-dpad-d" title="Move Right">&#9654;</button>
+            </div>
+            <button class="dpad-btn dpad-down" id="btn-dpad-s" title="Move Backward">&#9660;</button>
+          </div>
+
+          <div class="br-side-tools">
+            <div class="br-action-btn sprint-btn" id="btn-touch-sprint" title="Sprint">
+              <svg viewBox="0 0 24 24" class="btn-icon-svg"><path fill="currentColor" d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7z"/></svg>
+            </div>
+            <div class="br-action-btn backpack-btn" id="btn-touch-backpack" title="Backpack">
+              <svg viewBox="0 0 24 24" class="btn-icon-svg"><path fill="currentColor" d="M20 8v12c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h3V4c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v2h3c1.1 0 2 .9 2 2zM11 4v2h2V4h-2zM6 8v12h12V8H6z"/></svg>
+              <span class="badge-mini">59%</span>
+            </div>
+            <div class="br-action-btn medkit-btn" id="btn-touch-medkit" title="Medkit">
+              <svg viewBox="0 0 24 24" class="btn-icon-svg"><path fill="currentColor" d="M10.5 4.5h3v3h-3zm-6 6h15v9h-15zm4.5 3h6v3h-6z"/></svg>
+              <span class="badge-mini med-count" id="medkit-count">6</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="br-right-controls">
+          <div class="br-action-btn aim-scope-btn" id="btn-touch-aim" title="Aim Scope">
+            <svg viewBox="0 0 24 24" class="btn-icon-svg"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" d="M12 2v4 M12 18v4 M2 12h4 M18 12h4"/></svg>
+          </div>
+          <div class="br-action-btn fire-main-btn" id="btn-touch-fire" title="Fire">
+            <svg viewBox="0 0 36 36" class="fire-bullet-svg"><path fill="#ffffff" d="M16 4 C18 4 19 6 19 8 L19 22 L13 22 L13 8 C13 6 14 4 16 4 Z"/><path fill="#ffd043" d="M9 14 L4 12 L8 18 Z M23 14 L28 12 L24 18 Z M11 26 L6 30 L13 28 Z M21 26 L26 30 L19 28 Z"/></svg>
+          </div>
+          <div class="br-stance-cluster">
+            <div class="br-action-btn jump-btn" id="btn-touch-jump" title="Jump">
+              <svg viewBox="0 0 24 24" class="btn-icon-svg"><path fill="currentColor" d="M14 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-2.5 5.5l2.8 2.8c.4.4.9.7 1.5.7h4.2v2h-4.2c-1.1 0-2.2-.5-3-1.2l-1.3-1.3L10 14.5V21H8v-7.2l2-3.8-1.5-1.5L4 10.5V8.4l5.3-2.6c.7-.4 1.5-.4 2.2-.3z"/></svg>
+            </div>
+            <div class="br-action-btn crouch-btn" id="btn-touch-crouch" title="Crouch">
+              <svg viewBox="0 0 24 24" class="btn-icon-svg"><path fill="currentColor" d="M15 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.5 4.5l-3 4.5H5v2h4.2c.8 0 1.5-.4 1.9-1l1.7-2.6 1.7 1.7V17h-4v2h5c1.1 0 2-.9 2-2v-5.5l-2.6-2.6-.9-2.5c-.3-.8-1.1-1.4-2-1.4-.4 0-.8.1-1.2.3L6 8.5V11h2V9.6l2.5-1.1z"/></svg>
+            </div>
+            <div class="br-action-btn prone-btn" id="btn-touch-prone" title="Prone">
+              <svg viewBox="0 0 24 24" class="btn-icon-svg"><path fill="currentColor" d="M3 16h18v2H3zm2-4h5l2-3h5l2 3h2v2H4z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Vehicle Telemetry Cluster (Visible in car) -->
+        <div id="hud-vehicle-cluster" class="vehicle-cluster glass-panel hidden">
+          <div class="speedo-dial">
+            <svg class="dial-svg" viewBox="0 0 160 160">
+              <circle class="dial-bg" cx="80" cy="80" r="70" />
+              <circle class="dial-rpm-fill" id="dial-rpm-circle" cx="80" cy="80" r="70" />
+            </svg>
+            <div class="speedo-center">
+              <div class="speedo-number" id="hud-speed-num">0</div>
+              <div class="speedo-unit">MPH</div>
+              <div class="gear-tag" id="hud-gear-num">1</div>
+            </div>
+          </div>
+          <div class="telemetry-sub">
+            <div class="telemetry-bar-row">
+              <span class="bar-label">RPM</span>
+              <div class="meter-bar">
+                <div class="meter-fill rpm-meter" id="hud-rpm-meter" style="width: 10%;"></div>
+              </div>
+            </div>
+            <div class="telemetry-bar-row">
+              <span class="bar-label">BODY</span>
+              <div class="meter-bar">
+                <div class="meter-fill health-meter" id="hud-veh-hp" style="width: 100%;"></div>
+              </div>
+            </div>
+            <div class="telemetry-bar-row fuel-row">
+              <span class="bar-label">FUEL</span>
+              <div class="meter-bar">
+                <div class="meter-fill fuel-meter" id="hud-veh-fuel" style="width: 100%;"></div>
+              </div>
+              <span class="fuel-readout" id="hud-fuel-pct">100%</span>
+            </div>
+            <!-- Cockpit Controls: Blinkers & Wipers -->
+            <div class="vehicle-cockpit-switches">
+              <button class="cockpit-btn" id="btn-veh-signal-left" title="Left Turn Signal [Q]">&#9664; LEFT</button>
+              <button class="cockpit-btn" id="btn-veh-hazard" title="Hazard Flashers [H]">&#9888; HAZARD</button>
+              <button class="cockpit-btn" id="btn-veh-signal-right" title="Right Turn Signal [E]">&#9654; RIGHT</button>
+              <button class="cockpit-btn" id="btn-veh-wipers" title="Windshield Wipers [K]">&#9748; WIPERS</button>
+            </div>
+            <div class="vehicle-controls-hint">
+              <span>[Q]/[E] BLINKERS</span> &bull; <span>[K] WIPERS</span> &bull; <span>[L] LIGHTS</span> &bull; <span>[V] COCKPIT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL / MENU SCREENS (GARAGE, MAP, MISSIONS, SETTINGS, INVENTORY) -->
+    <div id="sub-screen-container" class="sub-screen-overlay hidden">
+      <div class="sub-screen-header">
+        <button id="btn-back-to-game" class="sub-header-back">&larr; RESUME GAME [ESC]</button>
+        <div class="sub-nav-tabs">
+          <button class="sub-tab-btn active" data-tab="garage">GARAGE & TUNING</button>
+          <button class="sub-tab-btn" data-tab="wardrobe">CHARACTER WARDROBE</button>
+          <button class="sub-tab-btn" data-tab="map">ISLAND MAP</button>
+          <button class="sub-tab-btn" data-tab="missions">CAMPAIGN & CONTRACTS</button>
+          <button class="sub-tab-btn" data-tab="settings">SETTINGS</button>
+          <button class="sub-tab-btn" data-tab="saves">SAVE & LOAD</button>
+        </div>
+        <div class="sub-header-cash" id="sub-cash-display">$45,000</div>
+      </div>
+
+      <div class="sub-screen-body">
+        <!-- TAB 1: GARAGE & TUNING -->
+        <div id="tab-garage" class="tab-panel active">
+          <div class="garage-layout">
+            <!-- Left: Vehicle Selector & Specs -->
+            <div class="garage-sidebar glass-panel">
+              <h3>SELECT FLEET VEHICLE</h3>
+              <div class="vehicle-selector-list" id="garage-vehicle-list">
+                <!-- Dynamically populated -->
+              </div>
+              
+              <div class="vehicle-specs-card">
+                <h4>PERFORMANCE RATINGS</h4>
+                <div class="spec-bar-row">
+                  <span>TOP SPEED</span>
+                  <div class="spec-bar"><div class="spec-fill" id="spec-speed"></div></div>
+                </div>
+                <div class="spec-bar-row">
+                  <span>ACCELERATION</span>
+                  <div class="spec-bar"><div class="spec-fill" id="spec-accel"></div></div>
+                </div>
+                <div class="spec-bar-row">
+                  <span>HANDLING</span>
+                  <div class="spec-bar"><div class="spec-fill" id="spec-handling"></div></div>
+                </div>
+                <div class="spec-bar-row">
+                  <span>BRAKING</span>
+                  <div class="spec-bar"><div class="spec-fill" id="spec-braking"></div></div>
+                </div>
+                <div class="spec-bar-row">
+                  <span>OFF-ROAD</span>
+                  <div class="spec-bar"><div class="spec-fill" id="spec-offroad"></div></div>
+                </div>
+                <div class="spec-bar-row">
+                  <span>DURABILITY</span>
+                  <div class="spec-bar"><div class="spec-fill" id="spec-durability"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Upgrades & Tuning & Paint -->
+            <div class="garage-customizer glass-panel">
+              <div class="customizer-sections">
+                <div class="section-column">
+                  <h4>ENGINE & PERFORMANCE</h4>
+                  <div class="upgrade-item" data-type="engine">
+                    <div class="upgrade-info">
+                      <span class="up-title">Twin-Turbo ECU Tune</span>
+                      <span class="up-cost">$5,000</span>
+                    </div>
+                    <button class="btn-upgrade" id="btn-up-engine">UPGRADE STAGE</button>
+                  </div>
+                  <div class="upgrade-item" data-type="brakes">
+                    <div class="upgrade-info">
+                      <span class="up-title">Carbon Ceramic Brakes</span>
+                      <span class="up-cost">$3,200</span>
+                    </div>
+                    <button class="btn-upgrade" id="btn-up-brakes">UPGRADE STAGE</button>
+                  </div>
+                  <div class="upgrade-item" data-type="suspension">
+                    <div class="upgrade-info">
+                      <span class="up-title">Coilover Track Suspension</span>
+                      <span class="up-cost">$4,000</span>
+                    </div>
+                    <button class="btn-upgrade" id="btn-up-suspension">UPGRADE STAGE</button>
+                  </div>
+                  <div class="upgrade-item" data-type="tires">
+                    <div class="upgrade-info">
+                      <span class="up-title">Semi-Slick Compound Tires</span>
+                      <span class="up-cost">$2,800</span>
+                    </div>
+                    <button class="btn-upgrade" id="btn-up-tires">UPGRADE STAGE</button>
+                  </div>
+                  <div class="upgrade-item" data-type="repair">
+                    <div class="upgrade-info">
+                      <span class="up-title">Complete Vehicle Repair</span>
+                      <span class="up-cost">$500</span>
+                    </div>
+                    <button class="btn-repair" id="btn-repair-vehicle">REPAIR BODY</button>
+                  </div>
+                </div>
+
+                <div class="section-column">
+                  <h4>PAINT & FINISH STUDIO</h4>
+                  <div class="paint-palette">
+                    <span class="palette-label">PRIMARY BODY COLOR</span>
+                    <div class="color-swatches" id="garage-paint-swatches">
+                      <button class="swatch active" style="background: #111;" data-color="#111111" title="Obsidian Black"></button>
+                      <button class="swatch" style="background: #a91212;" data-color="#a91212" title="Crimson Red"></button>
+                      <button class="swatch" style="background: #1a428a;" data-color="#1a428a" title="Midnight Navy"></button>
+                      <button class="swatch" style="background: #8b8000;" data-color="#d4af37" title="Liquid Gold"></button>
+                      <button class="swatch" style="background: #235c34;" data-color="#235c34" title="Racing Emerald"></button>
+                      <button class="swatch" style="background: #dcdcdc;" data-color="#dcdcdc" title="Pure Silver"></button>
+                      <button class="swatch" style="background: #ff5e00;" data-color="#ff5e00" title="Sunburst Orange"></button>
+                      <button class="swatch" style="background: #2d2f34;" data-color="#2d2f34" title="Matte Titanium"></button>
+                    </div>
+                  </div>
+
+                  <div class="finish-types">
+                    <span class="palette-label">FINISH SPECULARITY</span>
+                    <div class="btn-group">
+                      <button class="btn-toggle active" data-finish="metallic">METALLIC</button>
+                      <button class="btn-toggle" data-finish="matte">MATTE</button>
+                      <button class="btn-toggle" data-finish="gloss">HIGH GLOSS</button>
+                      <button class="btn-toggle" data-finish="carbon">CARBON FIBER</button>
+                    </div>
+                  </div>
+
+                  <div class="rim-options">
+                    <span class="palette-label">WHEEL RIM FINISH</span>
+                    <div class="color-swatches" id="garage-rim-swatches">
+                      <button class="swatch active" style="background: #111;" data-rim="#111"></button>
+                      <button class="swatch" style="background: #bbb;" data-rim="#bbb"></button>
+                      <button class="swatch" style="background: #c59b27;" data-rim="#c59b27"></button>
+                      <button class="swatch" style="background: #505050;" data-rim="#505050"></button>
+                    </div>
+                  </div>
+
+                  <button id="btn-spawn-active-car" class="btn-action-primary">
+                    SPAWN & DRIVE SELECTED VEHICLE
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: CHARACTER WARDROBE & PROTAGONIST CUSTOMIZATION -->
+        <div id="tab-wardrobe" class="tab-panel">
+          <div class="wardrobe-layout glass-panel">
+            <div class="wardrobe-sidebar">
+              <h3 id="wardrobe-char-name">PROTAGONIST CUSTOMIZER</h3>
+              <p class="section-desc">Select character identity, PBR apparel, ethnic & contemporary attire, and inspect survival vitals.</p>
+
+              <!-- Dual Protagonist Selection: Marcus vs Priya -->
+              <div class="wardrobe-category">
+                <h4>CHOOSE PROTAGONIST</h4>
+                <div class="gender-select-group">
+                  <button class="btn-gender active" id="btn-char-male" data-gender="male">
+                    <span class="gender-icon">&#128104;</span>
+                    <div class="gender-info">
+                      <strong>Marcus Vance</strong>
+                      <small>Ex-Tactical Operative (184 cm)</small>
+                    </div>
+                  </button>
+                  <button class="btn-gender" id="btn-char-female" data-gender="female">
+                    <span class="gender-icon">&#128105;</span>
+                    <div class="gender-info">
+                      <strong>Priya Sharma</strong>
+                      <small>Specialist Operative (168 cm)</small>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Outfits for Male Character -->
+              <div class="wardrobe-category" id="wardrobe-male-presets">
+                <h4>MALE OUTFITS & ATTIRE</h4>
+                <div class="preset-buttons">
+                  <button class="btn-preset active" data-preset="male_jacket">Apex Athletic Track Jacket</button>
+                  <button class="btn-preset" data-preset="male_suit">Wall Street Formal Suit & Tie</button>
+                  <button class="btn-preset" data-preset="male_denim">Rugged Denim Jacket & Jeans</button>
+                  <button class="btn-preset" data-preset="male_kurta">Royal Blue Embroidered Kurta</button>
+                  <button class="btn-preset" data-preset="male_tactical">Midnight Tactical Infiltrator</button>
+                </div>
+              </div>
+
+              <!-- Outfits for Female Character -->
+              <div class="wardrobe-category hidden" id="wardrobe-female-presets">
+                <h4>FEMALE OUTFITS & ATTIRE</h4>
+                <div class="preset-buttons">
+                  <button class="btn-preset active" data-preset="female_kurti">Crimson Silk Kurti & Zari Hem</button>
+                  <button class="btn-preset" data-preset="female_saree">Emerald Peacock Silk Saree & Pallu</button>
+                  <button class="btn-preset" data-preset="female_western">Urban Chic Denim & Leather Top</button>
+                  <button class="btn-preset" data-preset="female_formal">Corporate Charcoal Blazer Suit</button>
+                  <button class="btn-preset" data-preset="female_track">Apex Active Sports Tracksuit</button>
+                </div>
+              </div>
+
+              <!-- Survival Telemetry Status -->
+              <div class="wardrobe-category">
+                <h4>BIOLOGICAL VITALS & NEEDS</h4>
+                <div class="needs-stat-grid">
+                  <div class="need-box"><span>STAMINA</span><strong id="menu-stat-stamina">100%</strong></div>
+                  <div class="need-box"><span>HUNGER</span><strong id="menu-stat-hunger">94%</strong></div>
+                  <div class="need-box"><span>HYDRATION</span><strong id="menu-stat-thirst">90%</strong></div>
+                  <div class="need-box"><span>ENERGY</span><strong id="menu-stat-energy">95%</strong></div>
+                  <div class="need-box"><span>CORE TEMP</span><strong id="menu-stat-temp">37.0&deg;C</strong></div>
+                </div>
+              </div>
+
+              <button id="btn-apply-wardrobe" class="btn-action-primary">APPLY & RETURN TO GAME</button>
+            </div>
+            <div class="wardrobe-preview-info">
+              <div class="preview-badge">PHOTOREALISTIC PBR HUMAN RIGS &bull; UNREAL 5 FIDELITY</div>
+              <p>Features realistic human proportions (male & female), subsurface scattering skin tones, high-density strand hair, cloth wind flutter, and realistic biological survival systems.</p>
+              <div class="wardrobe-features-list">
+                <div>&bull; <strong>Strand-Based Hair:</strong> Dynamic physics sway in motion</div>
+                <div>&bull; <strong>Fabric Motion:</strong> Saree pallu & kurti hem flutter</div>
+                <div>&bull; <strong>Weather Response:</strong> Shivering in freezing rain</div>
+                <div>&bull; <strong>Dual Camera:</strong> Seamless 3rd & 1st person transitions [V]</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: ISLAND MAP -->
+        <div id="tab-map" class="tab-panel">
+          <div class="map-layout glass-panel">
+            <div class="map-toolbar">
+              <div class="map-legend">
+                <span class="legend-item"><span class="dot player"></span> You (Marcus)</span>
+                <span class="legend-item"><span class="dot mission"></span> Mission Objective</span>
+                <span class="legend-item"><span class="dot safehouse"></span> Safehouse / Garage</span>
+                <span class="legend-item"><span class="dot shop"></span> Armory & Upgrades</span>
+                <span class="legend-item"><span class="dot police"></span> Police Precinct</span>
+              </div>
+              <div class="map-actions">
+                <button id="btn-map-center-player" class="map-tool-btn">CENTER ON PLAYER</button>
+                <button id="btn-map-clear-waypoint" class="map-tool-btn">CLEAR GPS ROUTE</button>
+              </div>
+            </div>
+            <div class="fullscreen-map-wrapper">
+              <canvas id="fullscreen-map-canvas"></canvas>
+            </div>
+            <div class="map-footer-hint">CLICK ANYWHERE ON MAP TO SET GPS WAYPOINT &bull; DRAG TO PAN &bull; SCROLL TO ZOOM</div>
+          </div>
+        </div>
+
+        <!-- TAB 4: CAMPAIGN MISSIONS -->
+        <div id="tab-missions" class="tab-panel">
+          <div class="missions-layout glass-panel">
+            <div class="missions-list" id="missions-campaign-list">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="mission-details-panel" id="mission-details-card">
+              <h3 id="detail-m-title">ARRIVAL & EXTRACTION</h3>
+              <div class="detail-badge" id="detail-m-status">AVAILABLE</div>
+              <p id="detail-m-desc" class="detail-description">
+                Marcus touches down on the docks of Blackshore Island. His handler, Elena Cross, has identified a locked-down cargo transport carrying the experimental Apex Vanguard hypercar. Intercept the shipment and deliver the vehicle to the downtown safehouse.
+              </p>
+              <div class="detail-requirements">
+                <div class="req-item"><strong>OBJECTIVE:</strong> Infiltrate Docks &rarr; Secure Vehicle &rarr; Evade Patrols</div>
+                <div class="req-item"><strong>REWARD:</strong> $15,000 Cash + Unlock Vanguard Supercharger</div>
+                <div class="req-item"><strong>THREAT LEVEL:</strong> Moderate (Private Security + Police Response)</div>
+              </div>
+              <button id="btn-start-track-mission" class="btn-action-primary">TRACK / START MISSION</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: SETTINGS -->
+        <div id="tab-settings" class="tab-panel">
+          <div class="settings-layout glass-panel">
+            <div class="settings-column">
+              <h4>GRAPHICS & RENDERING</h4>
+              <div class="setting-row">
+                <label>PRESET QUALITY</label>
+                <select id="set-graphics-preset">
+                  <option value="low">Low (Maximum FPS)</option>
+                  <option value="medium">Medium</option>
+                  <option value="high" selected>High (PBR + Shadows)</option>
+                  <option value="ultra">Ultra (Cinematic + Post-FX)</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <label>TIME OF DAY (LIGHTING)</label>
+                <select id="set-time-of-day">
+                  <option value="day" selected>☀️ Day Mode (Noon Sun - Recommended)</option>
+                  <option value="sunset">🌅 Golden Hour Sunset</option>
+                  <option value="night">🌙 Moonlit Clear Night</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <label>DYNAMIC SHADOWS</label>
+                <input type="checkbox" id="set-shadows" checked>
+              </div>
+              <div class="setting-row">
+                <label>POST-PROCESSING (BLOOM & AO)</label>
+                <input type="checkbox" id="set-postfx" checked>
+              </div>
+              <div class="setting-row">
+                <label>DYNAMIC WEATHER & RAIN FX</label>
+                <input type="checkbox" id="set-weather" checked>
+              </div>
+              <div class="setting-row">
+                <label>VIEW DISTANCE CHUNKS</label>
+                <select id="set-view-dist">
+                  <option value="short">Short (Performance)</option>
+                  <option value="medium">Medium (Balanced)</option>
+                  <option value="far" selected>Far (Photorealistic)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-column">
+              <h4>AUDIO & SYNTHESIZER</h4>
+              <div class="setting-row">
+                <label>MASTER VOLUME</label>
+                <input type="range" id="set-vol-master" min="0" max="100" value="80">
+              </div>
+              <div class="setting-row">
+                <label>ENGINE & VEHICLE SFX</label>
+                <input type="range" id="set-vol-engine" min="0" max="100" value="90">
+              </div>
+              <div class="setting-row">
+                <label>ENVIRONMENT & RAIN</label>
+                <input type="range" id="set-vol-env" min="0" max="100" value="70">
+              </div>
+
+              <h4>CONTROLS</h4>
+              <div class="setting-row">
+                <label>MOUSE SENSITIVITY</label>
+                <input type="range" id="set-mouse-sens" min="1" max="10" value="5">
+              </div>
+              <div class="setting-row">
+                <label>INVERT Y-AXIS</label>
+                <input type="checkbox" id="set-invert-y">
+              </div>
+              <div class="setting-row">
+                <label>VEHICLE CAMERA AUTO-CENTER</label>
+                <input type="checkbox" id="set-cam-autocenter" checked>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: SAVE & LOAD -->
+        <div id="tab-saves" class="tab-panel">
+          <div class="saves-layout glass-panel">
+            <div class="saves-header">
+              <h3>OFFLINE LOCAL STORAGE SLOTS</h3>
+              <p>All progress is saved securely on your local device. Zero internet connection required.</p>
+            </div>
+            <div class="slots-container" id="saves-slots-list">
+              <!-- Dynamically populated slots -->
+            </div>
+            <div class="saves-actions">
+              <button id="btn-manual-save" class="btn-action-primary">CREATE NEW SAVE STATE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IN-GAME SMARTPHONE (Apex Titan Pro) -->
+  <div id="in-game-smartphone" class="smartphone-frame hidden">
+    <!-- Dynamic Bezel Notch & Speaker Ear-Piece -->
+    <div class="phone-speaker-notch">
+      <div class="dynamic-island">
+        <span class="island-indicator" id="phone-island-status">5G &bull; APEX OS</span>
+      </div>
+    </div>
+
+    <!-- Phone Screen Display -->
+    <div class="phone-screen">
+      <!-- Status Bar -->
+      <div class="phone-status-bar">
+        <span class="phone-clock" id="phone-status-time">14:30</span>
+        <div class="phone-status-icons">
+          <span class="phone-icon-item">5G</span>
+          <span class="phone-icon-item">&#128267;</span>
+          <span class="phone-icon-item">100%</span>
+        </div>
+      </div>
+
+      <!-- APP VIEW: HOME SCREEN -->
+      <div id="phone-view-home" class="phone-view active">
+        <div class="phone-home-header">
+          <div class="phone-user-greeting">Welcome back,</div>
+          <div class="phone-user-name" id="phone-owner-name">MARCUS VANCE</div>
+          <div class="phone-quick-balance">
+            <span class="balance-tag">WALLET BALANCE</span>
+            <span class="balance-val" id="phone-quick-cash">$45,000</span>
+          </div>
+        </div>
+
+        <div class="phone-app-grid">
+          <button class="phone-app-btn" id="app-btn-maps" title="GPS Navigation & District Waypoints">
+            <div class="app-icon-tile app-tile-maps">&#128506;&#65039;</div>
+            <span class="app-label">Apex Maps</span>
+          </button>
+          <button class="phone-app-btn" id="app-btn-bank" title="Apex Online Bank & Transactions">
+            <div class="app-icon-tile app-tile-bank">&#128179;</div>
+            <span class="app-label">Apex Bank</span>
+          </button>
+          <button class="phone-app-btn" id="app-btn-jobs" title="GigWork: Taxi & Courier Careers">
+            <div class="app-icon-tile app-tile-jobs">&#128662;</div>
+            <span class="app-label">GigWork</span>
+          </button>
+          <button class="phone-app-btn" id="app-btn-camera" title="Photo Mode Camera">
+            <div class="app-icon-tile app-tile-camera">&#128247;</div>
+            <span class="app-label">Camera</span>
+          </button>
+          <button class="phone-app-btn" id="app-btn-radio" title="Island Radio & Tunes">
+            <div class="app-icon-tile app-tile-radio">&#128251;</div>
+            <span class="app-label">Radio</span>
+          </button>
+          <button class="phone-app-btn" id="app-btn-comms" title="Safehouse Comms & Elena">
+            <div class="app-icon-tile app-tile-comms">&#128172;</div>
+            <span class="app-label">Comms</span>
+          </button>
+        </div>
+
+        <div class="phone-active-widget" id="phone-active-job-widget">
+          <div class="job-widget-title">&#9889; ACTIVE DISPATCH</div>
+          <div class="job-widget-body" id="phone-widget-job-text">No active career job. Open GigWork to start taxi or courier shifts.</div>
+        </div>
+      </div>
+
+      <!-- APP VIEW: MAPS & GPS WAYPOINTS -->
+      <div id="phone-view-maps" class="phone-view">
+        <div class="phone-app-nav">
+          <button class="phone-back-btn" id="btn-back-maps">&larr;</button>
+          <h4>APEX MAPS & GPS</h4>
+        </div>
+        <div class="phone-maps-content">
+          <p class="phone-subtitle">Tap a landmark to set turn-by-turn voice route:</p>
+          <div class="phone-poi-list" id="phone-poi-container">
+            <!-- Dynamically generated points of interest -->
+          </div>
+          <button class="phone-action-btn" id="btn-clear-gps">CLEAR CURRENT ROUTE</button>
+        </div>
+      </div>
+
+      <!-- APP VIEW: APEX BANK -->
+      <div id="phone-view-bank" class="phone-view">
+        <div class="phone-app-nav">
+          <button class="phone-back-btn" id="btn-back-bank">&larr;</button>
+          <h4>APEX MOBILE BANK</h4>
+        </div>
+        <div class="phone-bank-content">
+          <div class="bank-card-visual">
+            <div class="card-chip"></div>
+            <div class="card-brand">APEX PREMIER BLACK</div>
+            <div class="card-balance-box">
+              <span class="c-label">TOTAL LIQUID ASSETS</span>
+              <strong class="c-val" id="phone-bank-total-cash">$45,000</strong>
+            </div>
+            <div class="card-num-row">**** **** **** 7749</div>
+          </div>
+          <div class="bank-trans-feed">
+            <h5>RECENT ACTIVITY</h5>
+            <div class="trans-item">
+              <span>Bounty Payout: Container Port</span>
+              <strong class="text-credit">+$35,000</strong>
+            </div>
+            <div class="trans-item">
+              <span>Vehicle Fuel: Highway Petrol</span>
+              <strong class="text-debit">-$40</strong>
+            </div>
+            <div class="trans-item">
+              <span>Safehouse Tuning Parts</span>
+              <strong class="text-debit">-$1,200</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APP VIEW: GIGWORK CAREERS -->
+      <div id="phone-view-jobs" class="phone-view">
+        <div class="phone-app-nav">
+          <button class="phone-back-btn" id="btn-back-jobs">&larr;</button>
+          <h4>GIGWORK CAREERS</h4>
+        </div>
+        <div class="phone-jobs-content">
+          <div class="duty-toggle-section">
+            <div class="duty-pill">
+              <span>TAXI DRIVER SHIFT</span>
+              <button class="duty-toggle-btn" id="btn-toggle-taxi-duty">GO ON-DUTY</button>
+            </div>
+            <div class="duty-pill">
+              <span>COURIER FREIGHT SHIFT</span>
+              <button class="duty-toggle-btn" id="btn-toggle-courier-duty">GO ON-DUTY</button>
+            </div>
+          </div>
+
+          <div class="job-offers-header">AVAILABLE DISPATCHES</div>
+          <div class="job-offers-list" id="phone-jobs-list">
+            <!-- Dynamically populated ride and freight contracts -->
+          </div>
+        </div>
+      </div>
+
+      <!-- APP VIEW: CAMERA PHOTO MODE -->
+      <div id="phone-view-camera" class="phone-view">
+        <div class="phone-app-nav camera-nav">
+          <button class="phone-back-btn" id="btn-back-camera">&larr;</button>
+          <h4>PRO CAMERA</h4>
+        </div>
+        <div class="phone-camera-content">
+          <div class="camera-reticle-box">
+            <div class="camera-bracket top-l"></div>
+            <div class="camera-bracket top-r"></div>
+            <div class="camera-bracket bot-l"></div>
+            <div class="camera-bracket bot-r"></div>
+            <span class="camera-lens-tag">24mm &bull; f/1.7 &bull; 4K 60FPS</span>
+          </div>
+          <div class="camera-filters-row">
+            <button class="btn-cam-filter active" data-filter="none">NORMAL</button>
+            <button class="btn-cam-filter" data-filter="cinematic">CINEMA</button>
+            <button class="btn-cam-filter" data-filter="noir">NOIR</button>
+            <button class="btn-cam-filter" data-filter="cyber">CYBER</button>
+          </div>
+          <div class="camera-controls">
+            <button class="phone-shutter-btn" id="btn-phone-shutter" title="Capture Snapshot Photo"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- APP VIEW: RADIO -->
+      <div id="phone-view-radio" class="phone-view">
+        <div class="phone-app-nav">
+          <button class="phone-back-btn" id="btn-back-radio">&larr;</button>
+          <h4>ISLAND TUNES RADIO</h4>
+        </div>
+        <div class="phone-radio-content">
+          <div class="radio-visualizer-box">
+            <div class="visualizer-bar bar1"></div>
+            <div class="visualizer-bar bar2"></div>
+            <div class="visualizer-bar bar3"></div>
+            <div class="visualizer-bar bar4"></div>
+            <div class="visualizer-bar bar5"></div>
+          </div>
+          <div class="radio-station-list" id="phone-radio-stations">
+            <button class="station-btn active" data-station="synth">SYNTHWAVE FM 98.4</button>
+            <button class="station-btn" data-station="lofi">LO-FI CHILL DOWNTOWN</button>
+            <button class="station-btn" data-station="rock">RED ROCK SPEED ROCK</button>
+            <button class="station-btn" data-station="off">RADIO OFF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Home Swipe Indicator Bar -->
+      <div class="phone-home-indicator" id="phone-btn-home-bar" title="Return to Home Screen">
+        <div class="home-indicator-pill"></div>
+      </div>
+    </div>
+  <!-- "YOU DIED" GAME OVER MODAL -->
+  <div id="screen-you-died" class="death-screen-overlay hidden">
+    <div class="death-screen-card">
+      <div class="death-skull-glow">&#128128;</div>
+      <h1 class="death-title">YOU DIED</h1>
+      <p class="death-subtitle">ELIMINATED IN COMBAT</p>
+      <div class="death-actions">
+        <button id="btn-death-respawn" class="death-btn respawn">RESPAWN</button>
+        <button id="btn-death-restart" class="death-btn restart">RESTART MATCH</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

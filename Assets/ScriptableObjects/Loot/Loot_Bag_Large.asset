@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3d4e5f60718293a4b5c6d7e8f90a1b2, type: 3}
+  m_Name: Loot_Bag_Large
+  m_EditorClassIdentifier: 
+  itemId: large_bag
+  itemName: Expedition Military Bag (Large)
+  itemType: 3
+  tier: 3
+  description: Tier-3 military expedition pack maximizing gear storage to 480 rounds and 16 medical supplies.
+  weaponReference: {fileID: 0}
+  caliber: 
+  ammoCount: 0
+  healAmount: 0
+  useTime: 0
+  iconEmoji: 🎒
+  ammoCapacity: 480
+  medkitCapacity: 16
+  armorProtection: 0
+  armorLevel: 0

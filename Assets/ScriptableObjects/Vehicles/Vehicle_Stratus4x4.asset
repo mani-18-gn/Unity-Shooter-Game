@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f60718293a4b5c6d7e8f90a1, type: 3}
+  m_Name: Vehicle_Stratus4x4
+  m_EditorClassIdentifier: 
+  vehicleId: stratus_4x4
+  vehicleName: Stratus Overlander 4x4
+  vehicleClass: Off-Road Tactical SUV
+  isUnlocked: 1
+  mass: 2200
+  topSpeedMph: 135
+  maxEngineForce: 6200
+  brakeForce: 8800
+  steerAngleMax: 36
+  suspensionRestLength: 0.6
+  springStiffness: 28000
+  springDamping: 3400
+  topSpeedStat: 75
+  accelerationStat: 72
+  handlingStat: 70
+  brakingStat: 78
+  offroadStat: 95
+  durabilityStat: 98
+  defaultUpgrades:
+    engineStage: 1
+    brakesStage: 1
+    suspensionStage: 3
+    tiresStage: 3
+  paintColor: {r: 0.145, g: 0.169, b: 0.125, a: 1}
+  paintFinish: matte
+  rimColor: {r: 0.314, g: 0.314, b: 0.314, a: 1}
+  windowTint: 0.6
+  defaultHealth: 100
+  defaultFuel: 100

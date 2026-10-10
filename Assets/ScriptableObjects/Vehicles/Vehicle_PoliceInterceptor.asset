@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f60718293a4b5c6d7e8f90a1, type: 3}
+  m_Name: Vehicle_PoliceInterceptor
+  m_EditorClassIdentifier: 
+  vehicleId: police_interceptor
+  vehicleName: Vanguard Police Interceptor
+  vehicleClass: Law Enforcement Cruiser
+  isUnlocked: 1
+  mass: 1750
+  topSpeedMph: 180
+  maxEngineForce: 6600
+  brakeForce: 9200
+  steerAngleMax: 37
+  suspensionRestLength: 0.48
+  springStiffness: 31000
+  springDamping: 3200
+  topSpeedStat: 90
+  accelerationStat: 91
+  handlingStat: 82
+  brakingStat: 85
+  offroadStat: 45
+  durabilityStat: 92
+  defaultUpgrades:
+    engineStage: 2
+    brakesStage: 2
+    suspensionStage: 2
+    tiresStage: 2
+  paintColor: {r: 0.051, g: 0.067, b: 0.09, a: 1}
+  paintFinish: gloss
+  rimColor: {r: 0.067, g: 0.067, b: 0.067, a: 1}
+  windowTint: 0.6
+  defaultHealth: 100
+  defaultFuel: 100

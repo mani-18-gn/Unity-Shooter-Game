@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f60718293a4b5c6d7e8f90, type: 3}
+  m_Name: Weapon_M249
+  m_EditorClassIdentifier: 
+  weaponId: m249
+  weaponName: M249 SAW Light Machine Gun
+  category: 3
+  slot: 0
+  description: 100-round belt-fed squad automatic weapon. Suppressive firepower at
+    the expense of a long reload.
+  caliber: 5.56mm
+  magCapacity: 100
+  pellets: 1
+  damage: 32
+  fireRate: 0.075
+  isAutomatic: 1
+  range: 420
+  spread: 0.035
+  muzzleVelocity: 915
+  reloadTime: 4.6
+  recoilPitch: 0.065
+  recoilYawSpread: 0.045
+  scopeType: 1

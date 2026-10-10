@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f60718293a4b5c6d7e8f90a1, type: 3}
+  m_Name: Vehicle_TukTuk
+  m_EditorClassIdentifier: 
+  vehicleId: tuk_tuk
+  vehicleName: Bajaj RE Auto-Rickshaw
+  vehicleClass: Commercial 3-Wheeler / Tuk-Tuk
+  isUnlocked: 1
+  mass: 450
+  topSpeedMph: 55
+  maxEngineForce: 2400
+  brakeForce: 4500
+  steerAngleMax: 42
+  suspensionRestLength: 0.35
+  springStiffness: 18000
+  springDamping: 2000
+  topSpeedStat: 52
+  accelerationStat: 68
+  handlingStat: 94
+  brakingStat: 70
+  offroadStat: 40
+  durabilityStat: 60
+  defaultUpgrades:
+    engineStage: 1
+    brakesStage: 1
+    suspensionStage: 1
+    tiresStage: 1
+  paintColor: {r: 0.059, g: 0.349, b: 0.184, a: 1}
+  paintFinish: gloss
+  rimColor: {r: 0.067, g: 0.067, b: 0.067, a: 1}
+  windowTint: 0.2
+  defaultHealth: 100
+  defaultFuel: 100

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f60718293a4b5c6d7e8f90a1, type: 3}
+  m_Name: Vehicle_SovereignV12
+  m_EditorClassIdentifier: 
+  vehicleId: sovereign_v12
+  vehicleName: Sovereign V12 Royal Saloon
+  vehicleClass: Ultra-Luxury Executive Sedan
+  isUnlocked: 1
+  mass: 2150
+  topSpeedMph: 185
+  maxEngineForce: 6600
+  brakeForce: 8900
+  steerAngleMax: 36
+  suspensionRestLength: 0.5
+  springStiffness: 29000
+  springDamping: 3500
+  topSpeedStat: 92
+  accelerationStat: 86
+  handlingStat: 85
+  brakingStat: 90
+  offroadStat: 30
+  durabilityStat: 95
+  defaultUpgrades:
+    engineStage: 2
+    brakesStage: 2
+    suspensionStage: 2
+    tiresStage: 2
+  paintColor: {r: 0.043, g: 0.059, b: 0.098, a: 1}
+  paintFinish: metallic
+  rimColor: {r: 0.773, g: 0.608, b: 0.153, a: 1}
+  windowTint: 0.9
+  defaultHealth: 100
+  defaultFuel: 100

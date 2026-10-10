@@ -1,0 +1,32 @@
+=== CHARACTER ASSET INSPECTION REPORT ===
+
+--- Path: Assets/Characters/Ch15_nonPBR.fbx ---
+Main Asset: Ch15_nonPBR (GameObject)
+Total Sub-assets: 142
+  - Clip: __preview__mixamo.com (length: 1.00s, isLooping: False)
+  - Material: Ch15_body (shader: Universal Render Pipeline/Lit)
+  - Material: Ch15_body1 (shader: Universal Render Pipeline/Lit)
+  - Mesh: Ch15 (verts: 31707)
+  - Clip: mixamo.com (length: 0.03s, isLooping: False)
+  - Avatar: Ch15_nonPBRAvatar (isValid: True, isHuman: True)
+Summary: 1 meshes, 1 avatars, 2 clips, 2 materials.
+
+--- Path: Assets/Characters/[Male Warrior].fbx ---
+Main Asset: [Male Warrior] (GameObject)
+Total Sub-assets: 179
+  - Clip: __preview__Armature|Armature|mixamo.com|Layer0 (length: 1.00s, isLooping: False)
+  - Material: [Mail Warrior] Material_1 (armor).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (boots).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (clothes).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (elements).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (fabric).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (flesh).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (glass).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (iron).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (metal).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (shoes).001 (shader: Universal Render Pipeline/Lit)
+  - Material: [Mail Warrior] Material_1 (skin).001 (shader: Universal Render Pipeline/Lit)
+  - Mesh: [Male Warrior].001 (verts: 11560)
+  - Clip: Armature|Armature|mixamo.com|Layer0 (length: 1.00s, isLooping: False)
+  - Avatar: [Male Warrior]Avatar (isValid: True, isHuman: True)
+Summary: 1 meshes, 1 avatars, 2 clips, 11 materials.

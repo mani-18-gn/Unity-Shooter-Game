@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f60718293a4b5c6d7e8f90, type: 3}
+  m_Name: Weapon_Knife
+  m_EditorClassIdentifier: 
+  weaponId: knife
+  weaponName: Tanto Combat Knife
+  category: 7
+  slot: 2
+  description: High-carbon tactical tanto blade for silent, lethal close-quarters takedowns.
+  caliber: none
+  magCapacity: 1
+  pellets: 1
+  damage: 65
+  fireRate: 0.45
+  isAutomatic: 0
+  range: 2.4
+  spread: 0
+  muzzleVelocity: 0
+  reloadTime: 0
+  recoilPitch: 0
+  recoilYawSpread: 0
+  scopeType: 0
